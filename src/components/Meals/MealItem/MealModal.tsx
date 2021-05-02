@@ -74,9 +74,8 @@ const MealModal: React.FC<MealModalProps> = ({ onDismiss, meal }) => {
   return (
     <IonContent scrollEvents onIonScroll={handleScroll} fullscreen>
       <div className={classes.grid}>
-        <div className={classes.img}>
+        <div className={classes["image-container"]}>
           <img
-            className={classes["parallax-img"]}
             src={src}
             style={{
               transform: `translateY(${offsetY * 0.5}px)`,
@@ -88,7 +87,12 @@ const MealModal: React.FC<MealModalProps> = ({ onDismiss, meal }) => {
           <IonToolbar
             className={classes.toolbar}
             mode="ios"
-            style={{ "--background": "#", width: "50%" }}
+            style={{
+              "--background": "#",
+              width: "50%",
+              "--padding-start": "10px",
+              "--padding-top": "10px",
+            }}
           >
             <IonButtons slot="start" className="ion-hide-lg-up">
               <IonButton
@@ -125,6 +129,8 @@ const MealModal: React.FC<MealModalProps> = ({ onDismiss, meal }) => {
               opacity: `clamp(0, ${
                 (offsetY - turningPoint) / (imgHeight - turningPoint - 44)
               }, 1)`,
+              "--padding-start": "10px",
+              "--padding-top": "10px",
             }}
             mode="ios"
           >
@@ -158,6 +164,12 @@ const MealModal: React.FC<MealModalProps> = ({ onDismiss, meal }) => {
                 <Icon icon={faClock}></Icon> &nbsp; 40-50 min
               </IonLabel>
             </IonItem>
+            <h1>boring</h1>
+            <h1>boring</h1>
+            <h1>boring</h1>
+            <h1>boring</h1>
+            <h1>boring</h1>
+            <h1>boring</h1>
             <IonItem>
               <IonLabel>Any Comments?</IonLabel>
             </IonItem>

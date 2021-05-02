@@ -40,7 +40,11 @@ const MealItem: React.FC<MealItemProps> = (props: MealItemProps) => {
       </IonAvatar>
       <div>
         <h3 className={classes.name}>{props.meal.name}</h3>
-        <div className={classes.description}>{props.meal.description}</div>
+        <div className={classes.description}>
+          {props.meal.description.length <= 120
+            ? props.meal.description
+            : `${props.meal.description.substr(0, 117)}...`}
+        </div>
         <IonLabel className={classes.price} color="secondary">
           {price}
         </IonLabel>
