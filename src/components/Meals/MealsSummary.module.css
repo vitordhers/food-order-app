@@ -1,0 +1,10 @@
+.summary {
+  margin-top: -3rem !important;
+  opacity: 0.8;
+}
+
+
+.summary .title {
+  font-size: 2rem;
+  margin-top: 0px;
+}
