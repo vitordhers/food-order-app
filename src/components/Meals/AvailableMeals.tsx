@@ -1,9 +1,10 @@
-import { IonList, IonItem, IonCard, IonCardContent } from "@ionic/react";
+import { IonList, IonCard, IonCardContent } from "@ionic/react";
 import MealItem from "./MealItem/MealItem";
 import classes from "./AvailableMeals.module.css";
+import Meal from "../../interfaces/meal.interface";
 
 const AvailableMeals: React.FC = () => {
-  const DUMMY_MEALS = [
+  const DUMMY_MEALS: Meal[] = [
     {
       id: "m1",
       name: "Niguiri Express ( 18 unidades)",
