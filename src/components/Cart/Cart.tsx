@@ -61,8 +61,7 @@ const Cart: React.FC<CartProps> = ({ onDismiss }) => {
           </IonTitle>
           <IonButtons slot="end">
             <IonButton>
-              <Icon icon={faRecycle}></Icon>
-              Clear
+              <Icon icon={faRecycle}></Icon>&nbsp; Clear
             </IonButton>
           </IonButtons>
         </IonToolbar>
@@ -85,16 +84,24 @@ const Cart: React.FC<CartProps> = ({ onDismiss }) => {
         <section>
           <IonList>
             <IonItem lines="none">
-              <Icon icon={faMapMarkerAlt}></Icon>
-              Tikul St., 180
-              <br />
-              City/ SP
+              <Icon icon={faMapMarkerAlt}></Icon>&nbsp; Tikul St., 180 City /
+              State
             </IonItem>
             <IonItem lines="none">
-              <Icon icon={faClock}></Icon>
-              40 - 50 min.
+              <Icon icon={faClock}></Icon> &nbsp; 40 - 50 min.
             </IonItem>
           </IonList>
+        </section>
+        <section>
+          {cartCtx.items.length && CartItems}
+
+          {!cartCtx.items.length && (
+            <IonList>
+              <IonItem lines="none">
+                <h1>😪 Your bag is empty</h1>
+              </IonItem>
+            </IonList>
+          )}
         </section>
       </IonContent>
       <IonFooter>
