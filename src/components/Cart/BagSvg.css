@@ -1,0 +1,309 @@
+svg {
+  enable-background: new;
+}
+
+#layer2 {
+  display: inline;
+  opacity: 1;
+}
+
+#layer2 ellipse {
+  display: inline;
+  opacity: 1;
+  fill: #ffe7c4;
+  fill-opacity: 1;
+  stroke: #d45500;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-miterlimit: 4;
+  stroke-dasharray: none;
+  stroke-opacity: 0;
+}
+
+#path3998 {
+  display: inline;
+  fill: #fff0df;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 1px;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  stroke-opacity: 1;
+}
+
+#path4812 {
+  opacity: 1;
+  fill: #7e4c07;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 3.23244119;
+  stroke-linecap: round;
+  stroke-miterlimit: 4;
+  stroke-dasharray: none;
+  stroke-opacity: 0;
+}
+
+#path4003 {
+  fill: none;
+  stroke: #7e4c07;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: miter;
+  stroke-miterlimit: 4;
+  stroke-dasharray: none;
+  stroke-opacity: 1;
+}
+
+#path4810 {
+  opacity: 1;
+  fill: none;
+  stroke: #7e4c07;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: miter;
+  stroke-miterlimit: 4;
+  stroke-dasharray: none;
+  stroke-opacity: 1;
+}
+
+#path4829 {
+  opacity: 1;
+  fill: #2389da;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 2.50655675;
+  stroke-linecap: round;
+  stroke-miterlimit: 4;
+  stroke-dasharray: none;
+  stroke-opacity: 0;
+}
+
+#path4885 {
+  opacity: 1;
+  fill: #ffffff;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 2.50699997;
+  stroke-linecap: round;
+  stroke-miterlimit: 4;
+  stroke-dasharray: none;
+  stroke-opacity: 1;
+}
+
+#path4865 {
+  display: inline;
+  fill: #fe980e;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 0.5;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  stroke-miterlimit: 4;
+  stroke-dasharray: none;
+  stroke-opacity: 1;
+}
+
+#path4001 {
+  display: inline;
+  fill: #7e4c07;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 1.00233531px;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  stroke-opacity: 1;
+}
+
+#path4814 {
+  fill: #fe980f;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 1px;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  stroke-opacity: 1;
+}
+
+#path4816 {
+  display: inline;
+  opacity: 1;
+  fill: #fe980f;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-miterlimit: 4;
+  stroke-dasharray: none;
+  stroke-opacity: 0;
+}
+
+#ellipse4827 {
+  opacity: 1;
+  fill: #fe980f;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-miterlimit: 4;
+  stroke-dasharray: none;
+  stroke-opacity: 0;
+}
+
+#z1,
+#z2,
+#z3 {
+  color: #000000;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  font-stretch: normal;
+  font-size: medium;
+  line-height: 1.25;
+  font-family: sans-serif;
+  font-variant-ligatures: normal;
+  font-variant-position: normal;
+  font-variant-caps: normal;
+  font-variant-numeric: normal;
+  font-variant-alternates: normal;
+  font-feature-settings: normal;
+  text-indent: 0;
+  text-align: start;
+  text-decoration: none;
+  text-decoration-line: none;
+  text-decoration-style: solid;
+  text-decoration-color: #000000;
+  letter-spacing: 0px;
+  word-spacing: 0px;
+  text-transform: none;
+  writing-mode: lr-tb;
+  direction: ltr;
+  text-orientation: mixed;
+  text-anchor: start;
+  white-space: normal;
+  clip-rule: nonzero;
+  display: inline;
+  overflow: visible;
+  visibility: visible;
+  opacity: 1;
+  isolation: auto;
+  mix-blend-mode: normal;
+  color-interpolation-filters: linearRGB;
+  fill: #ffc373;
+  fill-opacity: 1;
+  fill-rule: nonzero;
+  stroke: none;
+  stroke-width: 3.89639139;
+  stroke-linecap: round;
+  stroke-linejoin: miter;
+  stroke-miterlimit: 4;
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+  stroke-opacity: 1;
+  image-rendering: auto;
+  shape-rendering: auto;
+  text-rendering: auto;
+  enable-background: accumulate;
+}
+
+#bubble {
+  /* animation: animateBubble 1.2s ease-out infinite; */
+  animation-duration: 1.2s;
+  animation-name: animateBubble;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-out;
+  animation-direction: alternate;
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+}
+
+#mouth {
+  animation: breath 1.2s ease-in infinite;
+  animation-direction: alternate;
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+}
+
+#z1 {
+  animation: z1 4.8s ease-in infinite;
+}
+
+#z2 {
+  animation: z2 4.8s ease-in infinite;
+}
+
+#z3 {
+  animation: z1 4.8s ease-in infinite;
+}
+
+@keyframes animateBubble {
+  from {
+    transform: scale(0.5, 0.5) translateX(-10px);
+  }
+  to {
+    transform: scale(1.5, 1.5) translateX(0px);
+  }
+}
+
+@keyframes breath {
+  from {
+    transform: scale(1, 1);
+  }
+  to {
+    transform: scale(0.5, 0.5);
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.5, 0.5) translateX(-10px, -10px);
+  }
+  to {
+    transform: scale(1.5, 1.5);
+  }
+}
+
+@keyframes z1 {
+  0% {
+    opacity: 0.2;
+    transform: translate(0, 0);
+  }
+  50% {
+    opacity: 1;
+
+    transform: translate(-4px, -14px);
+  }
+  100% {
+    opacity: 0.2;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes z2 {
+  0% {
+    opacity: 0.2;
+    transform: translate(0px, 0px);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(20px, -16px);
+  }
+  100% {
+    opacity: 0.2;
+    transform: translate(0, 0px);
+  }
+}
+
+@keyframes z3 {
+  0% {
+    opacity: 0.2;
+    transform: translate(0, 0);
+  }
+  50% {
+    opacity: 0.1;
+    transform: translate(2px, -8px);
+  }
+  100% {
+    opacity: 0.2;
+    transform: translate(0, 0);
+  }
+}

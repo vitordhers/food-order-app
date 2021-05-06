@@ -211,7 +211,7 @@ const MealModal: React.FC<MealModalProps> = ({
               />
               <IonButton
                 expand="block"
-                // onClick={() => onDismiss()}
+                onClick={() => onDismiss()}
                 fill="solid"
                 color="secondary"
                 className={classes["add-button"]}

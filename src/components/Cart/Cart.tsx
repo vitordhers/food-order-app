@@ -21,8 +21,9 @@ import {
   faMapMarkerAlt,
   faClock,
 } from "@fortawesome/free-solid-svg-icons";
-
 import CartContext from "../../store/cart-context";
+import classes from "./Cart.module.css";
+import { BagSvg } from "./BagSvg";
 
 interface CartProps {
   onDismiss: () => void;
@@ -31,7 +32,10 @@ interface CartProps {
 const Cart: React.FC<CartProps> = ({ onDismiss }) => {
   const cartCtx = useContext(CartContext);
 
+  console.log("items cart", cartCtx.items);
+
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
+  const hasItems = cartCtx.items.length > 0;
 
   const CartItems = (
     <IonList>
@@ -60,53 +64,65 @@ const Cart: React.FC<CartProps> = ({ onDismiss }) => {
             &nbsp; Bag
           </IonTitle>
           <IonButtons slot="end">
-            <IonButton>
-              <Icon icon={faRecycle}></Icon>&nbsp; Clear
-            </IonButton>
+            {hasItems && (
+              <IonButton>
+                <Icon icon={faRecycle}></Icon>&nbsp; Clear
+              </IonButton>
+            )}
           </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <section>
-          <IonSegment
-            onIonChange={(e) => console.log("Segment selected", e.detail.value)}
-            value="delivery"
-          >
-            <IonSegmentButton value="delivery">
-              <IonLabel>Delivery</IonLabel>
-            </IonSegmentButton>
-            <IonSegmentButton value="takeout">
-              <IonLabel>Take Out</IonLabel>
-            </IonSegmentButton>
-          </IonSegment>
-        </section>
-
-        <section>
-          <IonList>
+        {!hasItems && (
+          <IonList className={classes["empty-bag-list"]}>
             <IonItem lines="none">
-              <Icon icon={faMapMarkerAlt}></Icon>&nbsp; Tikul St., 180 City /
-              State
+              <BagSvg />
             </IonItem>
             <IonItem lines="none">
-              <Icon icon={faClock}></Icon> &nbsp; 40 - 50 min.
+              <h1>Your bag is empty</h1>
             </IonItem>
           </IonList>
-        </section>
-        <section>
-          {cartCtx.items.length && CartItems}
+        )}
 
-          {!cartCtx.items.length && (
-            <IonList>
-              <IonItem lines="none">
-                <h1>😪 Your bag is empty</h1>
-              </IonItem>
-            </IonList>
-          )}
-        </section>
+        {hasItems && (
+          <div>
+            <section>
+              <IonSegment
+                onIonChange={(e) =>
+                  console.log("Segment selected", e.detail.value)
+                }
+                value="delivery"
+              >
+                <IonSegmentButton value="delivery">
+                  <IonLabel>Delivery</IonLabel>
+                </IonSegmentButton>
+                <IonSegmentButton value="takeout">
+                  <IonLabel>Take Out</IonLabel>
+                </IonSegmentButton>
+              </IonSegment>
+            </section>
+
+            <section>
+              <IonList>
+                <IonItem lines="none">
+                  <Icon icon={faMapMarkerAlt}></Icon>&nbsp; Tikul St., 180 City
+                  / State
+                </IonItem>
+                <IonItem lines="none">
+                  <Icon icon={faClock}></Icon> &nbsp; 40 - 50 min.
+                </IonItem>
+              </IonList>
+            </section>
+
+            <section>{CartItems}</section>
+          </div>
+        )}
       </IonContent>
-      <IonFooter>
-        <IonButton expand="block">Order</IonButton>
-      </IonFooter>
+      {hasItems && (
+        <IonFooter>
+          <IonButton expand="block">Order</IonButton>
+        </IonFooter>
+      )}
     </Fragment>
   );
 };

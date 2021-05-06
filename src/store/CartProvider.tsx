@@ -21,14 +21,19 @@ const defaultCartState = {
 };
 
 const CartProvider: React.FC = ({ children }) => {
-  const [cartState, dispatchAction] = useReducer(cartReducer, defaultCartState);
+  const [cartState, dispatchCartAction] = useReducer(
+    cartReducer,
+    defaultCartState
+  );
 
   const addItemToCartHandler = (item: any) => {
-    dispatchAction({ type: CartActions.ADD, item });
+    dispatchCartAction({ type: CartActions.ADD, item });
   };
+
   const removeItemFromCartHandler = (id: string) => {
-    dispatchAction({ type: CartActions.REMOVE, id });
+    dispatchCartAction({ type: CartActions.REMOVE, id });
   };
+
   const cartContext = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,

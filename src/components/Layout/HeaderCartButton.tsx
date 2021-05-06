@@ -15,6 +15,9 @@ interface HeaderCartButtonProps {}
 
 const HeaderCartButton: React.FC<HeaderCartButtonProps> = (props) => {
   const cartCtx = useContext(CartContext);
+
+  console.log("items header", cartCtx.items);
+
   const numberOfCartItems = cartCtx.items.reduce((acc, item) => {
     return acc + item.amount;
   }, 0);
@@ -31,6 +34,7 @@ const HeaderCartButton: React.FC<HeaderCartButtonProps> = (props) => {
 
   const [present, dismiss] = useIonModal(Cart, {
     onDismiss: dismissHandler,
+    cartCtx,
   });
 
   return (
