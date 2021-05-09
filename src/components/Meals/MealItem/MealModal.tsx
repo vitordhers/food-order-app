@@ -1,4 +1,4 @@
-import { FormEvent, FormEventHandler, useEffect, useState } from "react";
+import { FormEvent, FormEventHandler, useState } from "react";
 import {
   IonButtons,
   IonButton,
@@ -20,15 +20,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import classes from "./MealModal.module.css";
 import MealAmountInput from "./Inputs/MealAmountInput";
-
-// import styled from "styled-components";
-// const Parallax = styled.div`
-//   & img {
-//     transform: translateY(
-//       ${(props: { offsetY: number }) => props.offsetY * 0.5 + "px"}
-//     );
-//   }
-// `;
+import MealCommentInput from "./Inputs/MealCommentInput";
+import MealOptionsInput from "./Inputs/MealOptionsInput";
 
 import Meal from "../../../interfaces/meal.interface";
 
@@ -39,24 +32,20 @@ interface MealModalProps {
 }
 
 const MealModal: React.FC<MealModalProps> = ({
-  onDismiss,
   meal,
+  onDismiss,
   onAddToCart,
 }) => {
   const [offsetY, setOffsetY] = useState(0);
-  const [comments, setComments] = useState("");
+  const [comment, setComment] = useState("");
   const [count, setCount] = useState(1);
   const [amountIsValid, setAmountIsValid] = useState(true);
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const src = require(`../../../assets/img/meals/${meal.id}.jpg`).default;
   const imgHeight = 350;
   const turningPoint = imgHeight - 50 - 44;
+
+  console.log("rerendered");
 
   const submitHandler: FormEventHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -97,29 +86,19 @@ const MealModal: React.FC<MealModalProps> = ({
               style={{
                 transform: `translateY(${offsetY * 0.5}px)`,
               }}
-              alt=""
+              alt={`${meal.name}`}
             />
           </div>
           <div className={classes.header}>
-            <IonToolbar
-              className={classes.toolbar}
-              mode="ios"
-              style={{
-                "--background": "#",
-                width: "50%",
-                "--padding-start": "10px",
-                "--padding-top": "10px",
-              }}
-            >
+            <IonToolbar className={classes["header-toolbar"]} mode="ios">
               <IonButtons slot="start" className="ion-hide-lg-up">
                 <IonButton
                   fill="solid"
                   shape="round"
                   style={{
                     "--background": "#92949c80",
-                    "--padding-start": "10.6875px",
-                    "--padding-end": "10.6875px",
                   }}
+                  className={classes["round-adjust"]}
                   onClick={() => onDismiss()}
                 >
                   <Icon icon={faChevronLeft}></Icon>
@@ -129,11 +108,8 @@ const MealModal: React.FC<MealModalProps> = ({
                 <IonButton
                   fill="clear"
                   shape="round"
-                  color="secondary"
-                  style={{
-                    "--padding-start": "10.6875px",
-                    "--padding-end": "10.6875px",
-                  }}
+                  color="danger"
+                  className={classes["round-adjust"]}
                   onClick={() => onDismiss()}
                 >
                   <Icon icon={faTimes}></Icon>
@@ -146,8 +122,6 @@ const MealModal: React.FC<MealModalProps> = ({
                 opacity: `clamp(0, ${
                   (offsetY - turningPoint) / (imgHeight - turningPoint - 44)
                 }, 1)`,
-                "--padding-start": "10px",
-                "--padding-top": "10px",
               }}
               mode="ios"
             >
@@ -156,10 +130,7 @@ const MealModal: React.FC<MealModalProps> = ({
                   fill="clear"
                   shape="round"
                   color="primary"
-                  style={{
-                    "--padding-start": "10.6875px",
-                    "--padding-end": "10.6875px",
-                  }}
+                  className={classes["round-adjust"]}
                   onClick={() => onDismiss()}
                 >
                   <Icon icon={faChevronLeft}></Icon>
@@ -181,22 +152,17 @@ const MealModal: React.FC<MealModalProps> = ({
                   <Icon icon={faClock}></Icon> &nbsp; 40-50 min
                 </IonLabel>
               </IonItem>
-              <IonTitle className={classes.title}>Any requests?</IonTitle>
-              <IonItem>
-                <IonTextarea
-                  placeholder="Ex.: No wasabi, separate cream cheese, etc"
-                  value={comments}
-                  onIonChange={(e) => setComments(e.detail.value!)}
-                  autoGrow
-                  inputmode="text"
-                  maxlength={200}
-                  name="requests"
-                  wrap="soft"
-                ></IonTextarea>
-              </IonItem>
+              {meal.options && Object.keys(meal.options).length > 0 && (
+                <MealOptionsInput
+                  mealOptions={meal.options}
+                  updateOptions={() => {}}
+                />
+              )}
+
+              <MealCommentInput updateComment={setComment} />
+
               {!amountIsValid && (
                 <IonItem lines="none" color="danger">
-                  {" "}
                   Please a valid amount (at least 1).
                 </IonItem>
               )}

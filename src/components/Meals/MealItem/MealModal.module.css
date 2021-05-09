@@ -3,7 +3,7 @@ ion-content {
 }
 
 .title {
-  font-size: 1.125rem;
+  font-size: 1.125rem !important;
   font-weight: 500;
 }
 
@@ -99,6 +99,19 @@ ion-item {
 
 .toolbar {
   position: fixed;
+  --padding-start: 10px;
+  --padding-top: 10px;
+}
+
+.header-toolbar {
+  --background: "#";
+  --padding-start: 10px;
+  --padding-top: 10px;
+}
+
+.round-adjust {
+  --padding-start: 10.6875px !important;
+  --padding-end: 10.6875px !important;
 }
 
 .transparent {

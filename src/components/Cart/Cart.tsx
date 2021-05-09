@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment } from "react";
 import {
   IonHeader,
   IonContent,
@@ -12,6 +12,9 @@ import {
   IonSegment,
   IonSegmentButton,
   IonLabel,
+  IonGrid,
+  IonRow,
+  IonCol,
 } from "@ionic/react";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,27 +23,40 @@ import {
   faRecycle,
   faMapMarkerAlt,
   faClock,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
-import CartContext from "../../store/cart-context";
+import { v1 as uuidv1 } from "uuid";
 import classes from "./Cart.module.css";
 import { BagSvg } from "./BagSvg";
+import { cartActions } from "../../store/cart/cart.slice";
+import { useDispatch, useSelector } from "react-redux";
+import { storeState } from "../../store";
+import { uiActions } from "../../store/ui/ui.slice";
+import CartItem from "../../store/cart/cartItem.interface";
 
-interface CartProps {
-  onDismiss: () => void;
-}
+interface CartProps {}
 
-const Cart: React.FC<CartProps> = ({ onDismiss }) => {
-  const cartCtx = useContext(CartContext);
+const Cart: React.FC<CartProps> = () => {
+  const cartState = useSelector((state: storeState) => state.cart);
+  const hasItems = cartState.items.length > 0;
+  // const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
+  const dispatch = useDispatch();
 
-  console.log("items cart", cartCtx.items);
+  const handleRemoveFromCart = (id: string) => {
+    dispatch(cartActions.removeItem(id));
+  };
 
-  const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
-  const hasItems = cartCtx.items.length > 0;
+  const handleDismiss = () => {
+    dispatch(uiActions.dismissCartModal());
+  };
 
   const CartItems = (
     <IonList>
-      {cartCtx.items.map((item) => (
-        <IonItem>{`${item.amount} x ${item.name}`}</IonItem>
+      {cartState.items.map((item: CartItem) => (
+        <IonItem
+          key={uuidv1()}
+          lines="none"
+        >{`${item.amount} x ${item.name}`}</IonItem>
       ))}
     </IonList>
   );
@@ -54,7 +70,8 @@ const Cart: React.FC<CartProps> = ({ onDismiss }) => {
               shape="round"
               fill="clear"
               color="primary"
-              onClick={onDismiss}
+              onClick={handleDismiss}
+              class="ion-hide-lg-up"
             >
               <Icon icon={faChevronDown}></Icon>
             </IonButton>
@@ -69,6 +86,13 @@ const Cart: React.FC<CartProps> = ({ onDismiss }) => {
                 <Icon icon={faRecycle}></Icon>&nbsp; Clear
               </IonButton>
             )}
+            <IonButton
+              onClick={handleDismiss}
+              color="danger"
+              class="ion-hide-lg-down"
+            >
+              <Icon icon={faTimes}></Icon>&nbsp;
+            </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
@@ -102,19 +126,26 @@ const Cart: React.FC<CartProps> = ({ onDismiss }) => {
               </IonSegment>
             </section>
 
-            <section>
-              <IonList>
-                <IonItem lines="none">
-                  <Icon icon={faMapMarkerAlt}></Icon>&nbsp; Tikul St., 180 City
-                  / State
-                </IonItem>
-                <IonItem lines="none">
-                  <Icon icon={faClock}></Icon> &nbsp; 40 - 50 min.
-                </IonItem>
-              </IonList>
-            </section>
-
-            <section>{CartItems}</section>
+            <IonGrid>
+              <IonRow>
+                <IonCol size="12" sizeLg="8" offsetLg="2">
+                  <IonList>
+                    <IonItem lines="none">
+                      <Icon icon={faMapMarkerAlt}></Icon>&nbsp; Tikul St., 180
+                      City / State
+                    </IonItem>
+                    <IonItem lines="none">
+                      <Icon icon={faClock}></Icon> &nbsp; 40 - 50 min.
+                    </IonItem>
+                  </IonList>
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol size="12" sizeLg="8" offsetLg="2">
+                  {CartItems}
+                </IonCol>
+              </IonRow>
+            </IonGrid>
           </div>
         )}
       </IonContent>

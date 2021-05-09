@@ -1,7 +1,7 @@
+import ReactDOM from "react-dom";
 import { Redirect, Route } from "react-router-dom";
-import { IonApp, IonRouterOutlet } from "@ionic/react";
+import { IonApp, IonRouterOutlet, IonModal } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import CartProvider from "./store/CartProvider";
 import Home from "./pages/Home";
 
 /* Core CSS required for Ionic components to work properly */
@@ -23,8 +23,25 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 
-const App: React.FC = () => (
-  <CartProvider>
+/* Global styles */
+import "./global.style.css";
+
+import Cart from "./components/Cart/Cart";
+import Counter from "./components/Meals/MealItem/Inputs/TestComponent";
+import { useDispatch, useSelector } from "react-redux";
+import { storeState } from "./store";
+import { uiActions } from "./store/ui/ui.slice";
+import { useEffect } from "react";
+
+const App: React.FC = () => {
+  const uiState = useSelector((state: storeState) => state.ui);
+  const dispatch = useDispatch();
+
+  const handleDismissModal = () => {
+    dispatch(uiActions.dismissCartModal());
+  };
+
+  return (
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
@@ -36,8 +53,15 @@ const App: React.FC = () => (
           </Route>
         </IonRouterOutlet>
       </IonReactRouter>
+      <IonModal
+        isOpen={uiState.cartModalIsShown}
+        cssClass="modal-inner"
+        onDidDismiss={handleDismissModal}
+      >
+        <Counter />
+      </IonModal>
     </IonApp>
-  </CartProvider>
-);
+  );
+};
 
 export default App;

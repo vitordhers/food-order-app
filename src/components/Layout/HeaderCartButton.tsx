@@ -1,41 +1,23 @@
-import {
-  IonButton,
-  IonBadge,
-  IonLabel,
-  useIonModal,
-  IonIcon,
-} from "@ionic/react";
+import { IonButton, IonBadge, IonLabel } from "@ionic/react";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
-import Cart from "../Cart/Cart";
-import CartContext from "../../store/cart-context";
-import { useContext } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { storeState } from "../../store";
+import { uiActions } from "../../store/ui/ui.slice";
 
 interface HeaderCartButtonProps {}
 
 const HeaderCartButton: React.FC<HeaderCartButtonProps> = (props) => {
-  const cartCtx = useContext(CartContext);
+  const cartState = useSelector((state: storeState) => state.cart);
+  const dispatch = useDispatch();
 
-  console.log("items header", cartCtx.items);
-
-  const numberOfCartItems = cartCtx.items.reduce((acc, item) => {
+  const numberOfCartItems = cartState.items.reduce((acc, item) => {
     return acc + item.amount;
   }, 0);
 
   const openCartModal = () => {
-    present({
-      cssClass: "modal-inner",
-    });
+    dispatch(uiActions.presentCartModal());
   };
-
-  const dismissHandler = () => {
-    dismiss();
-  };
-
-  const [present, dismiss] = useIonModal(Cart, {
-    onDismiss: dismissHandler,
-    cartCtx,
-  });
 
   return (
     <IonButton

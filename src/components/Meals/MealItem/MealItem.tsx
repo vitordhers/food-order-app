@@ -1,4 +1,3 @@
-import { useState, useContext } from "react";
 import {
   IonItem,
   IonLabel,
@@ -7,47 +6,27 @@ import {
   IonSpinner,
   IonImg,
 } from "@ionic/react";
-import CartContext from "../../../store/cart-context";
+import { useDispatch, useSelector } from "react-redux";
+
 import Meal from "../../../interfaces/meal.interface";
 import classes from "./MealItem.module.css";
 import MealModal from "./MealModal";
+import { cartActions } from "../../../store/cart/cart.slice";
+import { storeState } from "../../../store";
+import { uiActions } from "../../../store/ui/ui.slice";
+import { MouseEventHandler } from "react";
 
-const MealItem: React.FC<{ meal: Meal }> = ({ meal }) => {
-  const cartCtx = useContext(CartContext);
-
+const MealItem: React.FC<{
+  meal: Meal;
+  handleClick: any;
+}> = ({ meal, handleClick }) => {
   const price = `$ ${meal.price.toFixed(2)}`;
   const src = require(`../../../assets/img/meals/${meal.id}.jpg`).default;
 
-  const dismissHandler = () => {
-    dismiss();
-  };
-
-  const addItemToCartHandler = (amount: number) => {
-    cartCtx.addItem({
-      id: meal.id,
-      name: meal.name,
-      amount,
-      price: meal.price,
-    });
-  };
-
-  const [present, dismiss] = useIonModal(MealModal, {
-    meal,
-    onDismiss: dismissHandler,
-    onAddToCart: addItemToCartHandler,
-  });
-
-  const openMealModal = () => {
-    present({
-      cssClass: "modal-inner",
-    });
-  };
-
   return (
-    <IonItem color="dark" onClick={openMealModal} button>
+    <IonItem color="dark" onClick={() => handleClick(meal.id)} button>
       <IonAvatar className={classes.avatar} slot="end">
-        <IonImg src={src} />
-        {/* <img src={image} alt={`Thumbnail of ${props.meal.name}`} /> */}
+        <IonImg src={src} alt={`Thumbnail of ${meal.name}`} />
       </IonAvatar>
       <div>
         <h3 className={classes.name}>{meal.name}</h3>
