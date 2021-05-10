@@ -12,12 +12,12 @@
   }
 }
 
+.transparent {
+  --background: transparent !important;
+}
+
 @media only screen and (max-width: 1248px) {
   .modal-inner .modal-wrapper {
     max-width: 960px;
   }
-}
-
-.transparent .toolbar-background {
-  background: transparent !important;
 }

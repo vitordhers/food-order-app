@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, useReducer } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import {
   IonItemGroup,
   IonItemDivider,
@@ -8,127 +14,25 @@ import {
   IonButtons,
   IonButton,
   IonCheckbox,
+  IonRadioGroup,
   IonRadio,
+  IonBadge,
 } from "@ionic/react";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
-import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMinus,
+  faPlus,
+  faCheckDouble,
+} from "@fortawesome/free-solid-svg-icons";
+import mealOptionsReducer from "./mealOptionsReducer";
 import MealOptions from "../../../../interfaces/meal-options.interface";
 import { OptionsReducerType } from "./options-reduce-type.enum";
+import classes from "./MealOptionsInput.module.css";
 
-const optionsReducer = (
-  state: {
-    options: MealOptions;
-    isValid: { [optionId: string]: boolean };
-    disabled: { [optionId: string]: boolean };
-  },
-  action: {
-    optionId: string;
-    subOptionId: string;
-    type: OptionsReducerType;
-  }
-): {
-  options: MealOptions;
-  isValid: {
-    [x: string]: boolean;
-  };
-  disabled: {
-    [x: string]: boolean;
-  };
-} => {
-  const updatedOptions = { ...state.options };
-  if (action.type === OptionsReducerType.INCREMENT_SUBITEM) {
-    return {
-      options: {
-        ...updatedOptions,
-        [action.optionId]: {
-          ...updatedOptions[action.optionId],
-          subOptionsCount: updatedOptions[action.optionId].subOptionsCount + 1,
-          subOptions: {
-            ...updatedOptions[action.optionId].subOptions,
-            [action.subOptionId]: {
-              ...updatedOptions[action.optionId].subOptions[action.subOptionId],
-              subOptionAmount:
-                updatedOptions[action.optionId].subOptions[action.subOptionId]
-                  .subOptionAmount + 1,
-            },
-          },
-        },
-      },
-      isValid: {
-        ...state.isValid,
-        [action.optionId]:
-          updatedOptions[action.optionId].subOptionsCount + 1 >=
-            updatedOptions[action.optionId].atLeast &&
-          updatedOptions[action.optionId].subOptionsCount + 1 <=
-            updatedOptions[action.optionId].upTo,
-      },
-      disabled: {
-        ...state.disabled,
-        [action.optionId]:
-          updatedOptions[action.optionId].subOptionsCount + 1 >=
-          updatedOptions[action.optionId].upTo,
-      },
-    };
-  }
-
-  if (action.type === OptionsReducerType.DECREMENT_SUBITEM) {
-    return {
-      options: {
-        ...updatedOptions,
-        [action.optionId]: {
-          ...updatedOptions[action.optionId],
-          subOptionsCount: updatedOptions[action.optionId].subOptionsCount - 1,
-          subOptions: {
-            ...updatedOptions[action.optionId].subOptions,
-            [action.subOptionId]: {
-              ...updatedOptions[action.optionId].subOptions[action.subOptionId],
-              subOptionAmount:
-                updatedOptions[action.optionId].subOptions[action.subOptionId]
-                  .subOptionAmount - 1,
-            },
-          },
-        },
-      },
-      isValid: {
-        ...state.isValid,
-        [action.optionId]:
-          state.options[action.optionId].subOptionsCount - 1 >
-            updatedOptions[action.optionId].atLeast &&
-          state.options[action.optionId].subOptionsCount - 1 <
-            updatedOptions[action.optionId].upTo,
-      },
-      disabled: {
-        [action.optionId]:
-          state.options[action.optionId].subOptionsCount - 1 >=
-          updatedOptions[action.optionId].upTo,
-      },
-    };
-  }
-  //   switch (action.type) {
-  //     case OptionsReducerType.INCREMENT_SUBITEM: {
-  //     }
-  //     case OptionsReducerType.DECREMENT_SUBITEM: {
-  //     }
-  //     //   return {};
-  //     // case OptionsReducerType.CHECK:
-  //     //   return {};
-  //     // case OptionsReducerType.UNCHECK:
-  //     //   return {};
-  //     // case OptionsReducerType.SELECT_RADIO:
-  //     //   return {};
-  //     default:
-  //       return {
-  //         options: state.options,
-  //         isValid: state.isValid,
-  //         disabled: state.disabled,
-  //       };
-  //   }
-
-  return {
-    options: state.options,
-    isValid: state.isValid,
-    disabled: state.disabled,
-  };
+const mergeObjects = (objects: { [x: string]: boolean }[]) => {
+  return objects.reduce((result, current) => {
+    return Object.assign(result, current);
+  }, {});
 };
 
 type MealCommentInputProps = {
@@ -142,78 +46,140 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
   updateOptions,
   previousOptions,
 }) => {
-  const mergeObjects = (objects: { [x: string]: boolean }[]) => {
-    return objects.reduce((result, current) => {
-      return Object.assign(result, current);
-    }, {});
-  };
   const validatorsList = Object.keys(mealOptions).map((optionId) =>
-    mealOptions[optionId].atLeast > 0 ? { [optionId]: false } : {}
+    mealOptions[optionId].atLeast > 0
+      ? {
+          [optionId]:
+            mealOptions[optionId].subOptionsCount >=
+              mealOptions[optionId].atLeast &&
+            mealOptions[optionId].subOptionsCount >= mealOptions[optionId].upTo,
+        }
+      : {}
   );
   const validators = mergeObjects(validatorsList);
-
   const disableablesList = Object.keys(mealOptions).map((optionId) =>
-    mealOptions[optionId].upTo > 0 ? { [optionId]: false } : {}
+    mealOptions[optionId].upTo > 0
+      ? {
+          [optionId]:
+            mealOptions[optionId].subOptionsCount >=
+              mealOptions[optionId].atLeast &&
+            mealOptions[optionId].subOptionsCount >= mealOptions[optionId].upTo,
+        }
+      : {}
   );
-
   const disableables = mergeObjects(disableablesList);
 
-  const [optionsState, dispatchOptions] = useReducer(optionsReducer, {
+  const [optionsState, dispatchOptions] = useReducer(mealOptionsReducer, {
     options: mealOptions,
     isValid: { ...validators },
     disabled: { ...disableables },
   });
 
-  console.log(optionsState);
+  const { options } = optionsState;
+
+  useEffect(() => {
+    return () => {
+      // !!Object.keys(optionsState.isValid).find(
+      //   (optionId) => validators[optionId] === false
+      updateOptions(options);
+    };
+  }, [options, updateOptions]);
+
+  // console.log(options);
 
   return (
     <>
-      {Object.keys(optionsState.options).map((optionId) => {
+      {Object.keys(options).map((optionId) => {
         return (
           <IonItemGroup key={optionId}>
             <IonItemDivider color="light">
-              <IonLabel>{optionsState.options[optionId].optionText}</IonLabel>
-              {optionsState.options[optionId].type === "checkbox" && (
-                <IonCheckbox
-                  className="ion-margin-horizontal"
-                  slot="end"
-                ></IonCheckbox>
-              )}
+              <IonLabel>
+                {options[optionId].optionText}
+                <span className={classes.validators}>
+                  {options[optionId].atLeast > 0 && options[optionId].upTo > 0
+                    ? options[optionId].atLeast === options[optionId].upTo
+                      ? options[optionId].atLeast === 1
+                        ? "Choose 1 option."
+                        : `Pick ${options[optionId].atLeast} option${
+                            options[optionId].atLeast !== 1 ? "s" : ""
+                          }.`
+                      : `Pick between ${options[optionId].atLeast} and ${options[optionId].upTo} options.`
+                    : options[optionId].atLeast === 0 &&
+                      options[optionId].upTo > 0
+                    ? `Pick up to ${options[optionId].upTo} option${
+                        options[optionId].upTo !== 1 ? "s" : ""
+                      }.`
+                    : options[optionId].atLeast > 0 &&
+                      options[optionId].upTo === 0
+                    ? `Pick at least ${options[optionId].atLeast} option${
+                        options[optionId].atLeast !== 1 ? "s" : ""
+                      }.`
+                    : options[optionId].atLeast === 0 &&
+                      options[optionId].upTo === 0
+                    ? ""
+                    : ""}
+                </span>
+              </IonLabel>
+              <IonBadge
+                color={
+                  optionsState.isValid[optionId] ? "transparent" : "danger"
+                }
+                slot="end"
+                className={classes["required-badge"]}
+                mode="ios"
+              >
+                {!optionsState.isValid[optionId] &&
+                  options[optionId].required && <IonLabel>Required</IonLabel>}
+
+                {optionsState.isValid[optionId] && (
+                  <Icon
+                    icon={faCheckDouble}
+                    color="var(--ion-color-success)"
+                  ></Icon>
+                )}
+              </IonBadge>
             </IonItemDivider>
-            {Object.keys(optionsState.options[optionId].subOptions).map(
-              (subOptionId) => {
+            <IonRadioGroup
+              value={options[optionId].selectedId[0]}
+              onIonChange={(e) =>
+                dispatchOptions({
+                  type: OptionsReducerType.SELECT_RADIO,
+                  optionId,
+                  selectedId: e.detail.value,
+                })
+              }
+            >
+              {Object.keys(options[optionId].subOptions).map((subOptionId) => {
+                if (!subOptionId) return;
                 return (
                   <IonItem key={subOptionId} lines="none">
                     <IonLabel>
-                      {
-                        optionsState.options[optionId].subOptions[subOptionId]
-                          .subOptionText
-                      }
-                      {optionsState.options[optionId].subOptions[subOptionId]
+                      {options[optionId].subOptions[subOptionId].subOptionText}
+                      {options[optionId].subOptions[subOptionId]
                         .subOptionPrice > 0 && (
-                        <h3>{` + $ ${optionsState.options[optionId].subOptions[
+                        <h3
+                          className={classes["suboption-increase"]}
+                        >{` + $ ${options[optionId].subOptions[
                           subOptionId
                         ].subOptionPrice.toFixed(2)}`}</h3>
                       )}
                     </IonLabel>
 
                     <div slot="end">
-                      {optionsState.options[optionId].type === "iterable" && (
-                        <IonToolbar>
+                      {options[optionId].type === "iterable" && (
+                        <IonToolbar className="transparent">
                           <IonButtons>
                             <IonButton
                               shape="round"
                               color="secondary"
                               disabled={
-                                optionsState.options[optionId].subOptions[
-                                  subOptionId
-                                ].subOptionAmount <= 0
+                                options[optionId].subOptions[subOptionId]
+                                  .subOptionAmount <= 0
                               }
                               style={{
                                 opacity:
-                                  optionsState.options[optionId].subOptions[
-                                    subOptionId
-                                  ].subOptionAmount <= 0
+                                  options[optionId].subOptions[subOptionId]
+                                    .subOptionAmount <= 0
                                     ? 0
                                     : 1,
                               }}
@@ -231,18 +197,16 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
                               lines="none"
                               style={{
                                 opacity:
-                                  optionsState.options[optionId].subOptions[
-                                    subOptionId
-                                  ].subOptionAmount <= 0
+                                  options[optionId].subOptions[subOptionId]
+                                    .subOptionAmount <= 0
                                     ? 0
                                     : 1,
                               }}
                             >
                               <IonLabel>
                                 {
-                                  optionsState.options[optionId].subOptions[
-                                    subOptionId
-                                  ].subOptionAmount
+                                  options[optionId].subOptions[subOptionId]
+                                    .subOptionAmount
                                 }
                               </IonLabel>
                             </IonItem>
@@ -263,14 +227,37 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
                           </IonButtons>
                         </IonToolbar>
                       )}
-                      {optionsState.options[optionId].type === "radio" && (
-                        <IonRadio value={subOptionId} />
+                      {options[optionId].type === "radio" && (
+                        <IonRadio value={subOptionId} mode="ios" />
+                      )}
+                      {options[optionId].type === "checkbox" && (
+                        <IonCheckbox
+                          // checked={options[optionId].selectedId.includes(
+                          //   subOptionId
+                          // )}
+                          // disabled={optionsState.disabled[optionId]}
+                          onIonChange={(e) => {
+                            console.log("onchange");
+                            if (e.detail.checked) {
+                              return dispatchOptions({
+                                type: OptionsReducerType.CHECK,
+                                optionId,
+                                subOptionId,
+                              });
+                            }
+                            return dispatchOptions({
+                              type: OptionsReducerType.UNCHECK,
+                              optionId,
+                              subOptionId,
+                            });
+                          }}
+                        />
                       )}
                     </div>
                   </IonItem>
                 );
-              }
-            )}
+              })}
+            </IonRadioGroup>
           </IonItemGroup>
         );
       })}

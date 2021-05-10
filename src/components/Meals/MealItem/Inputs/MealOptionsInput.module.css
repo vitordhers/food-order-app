@@ -1,0 +1,19 @@
+.validators {
+  font-style: italic;
+  font-size: 0.8em;
+  margin-left: 5px;
+}
+
+.suboption-increase {
+  color: var(--ion-color-secondary);
+  margin-top: 10px !important;
+  font-weight: 700 !important;
+}
+
+.required-badge {
+  margin-right: 5px;
+}
+
+ion-item-divider {
+  border: 0;
+}

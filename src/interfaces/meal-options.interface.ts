@@ -13,7 +13,7 @@ export default interface MealOptions {
     subOptionsCount: number;
     atLeast: number;
     upTo: number;
-    selectedId: string;
+    selectedId: string[];
     checkboxPrice: number;
   };
 }

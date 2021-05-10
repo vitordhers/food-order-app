@@ -8,7 +8,7 @@ ion-content {
 }
 
 ion-item {
-  color: #717171;
+  color: #a0a0a0;
   font-weight: 300;
   font-size: 0.875rem;
 }
@@ -104,6 +104,8 @@ ion-item {
 }
 
 .header-toolbar {
+  position: fixed;
+  width: 50%;
   --background: "#";
   --padding-start: 10px;
   --padding-top: 10px;
@@ -112,10 +114,6 @@ ion-item {
 .round-adjust {
   --padding-start: 10.6875px !important;
   --padding-end: 10.6875px !important;
-}
-
-.transparent {
-  --background: #fffffffff;
 }
 
 .padded {
