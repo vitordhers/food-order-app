@@ -8,7 +8,6 @@ import {
   IonList,
   IonItem,
   IonLabel,
-  IonTextarea,
 } from "@ionic/react";
 
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
@@ -42,8 +41,6 @@ const MealModal: React.FC<MealModalProps> = ({
   const [amountIsValid, setAmountIsValid] = useState(true);
 
   const src = require(`../../../assets/img/meals/${meal.id}.jpg`).default;
-  const imgHeight = 350;
-  const turningPoint = imgHeight - 50 - 44;
 
   console.log("rerendered");
 
@@ -58,9 +55,6 @@ const MealModal: React.FC<MealModalProps> = ({
   };
 
   const handleScroll = (e: any) => {
-    if (e.detail.scrollTop >= imgHeight) {
-      return setOffsetY(imgHeight);
-    }
     setOffsetY(e.detail.scrollTop);
   };
 
@@ -77,17 +71,18 @@ const MealModal: React.FC<MealModalProps> = ({
   };
 
   return (
-    <IonContent scrollEvents onIonScroll={handleScroll} fullscreen>
+    <IonContent
+      scrollEvents
+      onIonScroll={handleScroll}
+      fullscreen
+      style={{
+        "--offsetY": offsetY,
+      }}
+    >
       <form onSubmit={submitHandler}>
         <div className={classes.grid}>
           <div className={classes["image-container"]}>
-            <img
-              src={src}
-              style={{
-                transform: `translateY(${offsetY * 0.5}px)`,
-              }}
-              alt={`${meal.name}`}
-            />
+            <img src={src} alt={`${meal.name}`} />
           </div>
           <div className={classes.header}>
             <IonToolbar className={classes["header-toolbar"]} mode="ios">
@@ -118,11 +113,6 @@ const MealModal: React.FC<MealModalProps> = ({
             </IonToolbar>
             <IonToolbar
               className={`${classes.toolbar} ion-hide-lg-up`}
-              style={{
-                opacity: `clamp(0, ${
-                  (offsetY - turningPoint) / (imgHeight - turningPoint - 44)
-                }, 1)`,
-              }}
               mode="ios"
             >
               <IonButtons slot="start">

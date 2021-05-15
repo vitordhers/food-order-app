@@ -1,20 +1,7 @@
-import {
-  IonItem,
-  IonLabel,
-  IonAvatar,
-  useIonModal,
-  IonSpinner,
-  IonImg,
-} from "@ionic/react";
-import { useDispatch, useSelector } from "react-redux";
+import { IonItem, IonLabel, IonAvatar, IonImg } from "@ionic/react";
 
 import Meal from "../../../interfaces/meal.interface";
 import classes from "./MealItem.module.css";
-import MealModal from "./MealModal";
-import { cartActions } from "../../../store/cart/cart.slice";
-import { storeState } from "../../../store";
-import { uiActions } from "../../../store/ui/ui.slice";
-import { MouseEventHandler } from "react";
 
 const MealItem: React.FC<{
   meal: Meal;

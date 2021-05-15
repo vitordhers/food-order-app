@@ -27,7 +27,7 @@ import "./theme/variables.css";
 import "./global.style.css";
 
 import Cart from "./components/Cart/Cart";
-import Counter from "./components/Meals/MealItem/Inputs/TestComponent";
+// import Counter from "./components/Meals/MealItem/Inputs/TestComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { storeState } from "./store";
 import { uiActions } from "./store/ui/ui.slice";
@@ -58,7 +58,7 @@ const App: React.FC = () => {
         cssClass="modal-inner"
         onDidDismiss={handleDismissModal}
       >
-        <Counter />
+        <Cart />
       </IonModal>
     </IonApp>
   );

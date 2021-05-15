@@ -1,5 +1,8 @@
 ion-content {
   --background: var(--ion-item-background);
+  --offsetY: 0;
+  --imgHeight: 350;
+  --turningPoint: calc(var(--imgHeight) -50 -44);
 }
 
 .title {
@@ -59,7 +62,8 @@ ion-item {
 
 .image-container img {
   max-height: 350px;
-  transform: none !important;
+
+  transform: translateY(calc(0.5px * min(var(--offsetY), var(--imgHeight))));
 }
 
 @media only screen and (min-width: 960px) {
@@ -101,6 +105,7 @@ ion-item {
   position: fixed;
   --padding-start: 10px;
   --padding-top: 10px;
+  opacity: clamp(0, calc(var(--offsetY) / (var(--imgHeight) - 51)), 1);
 }
 
 .header-toolbar {

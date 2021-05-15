@@ -5,7 +5,7 @@ import MealItem from "./MealItem/MealItem";
 import classes from "./AvailableMeals.module.css";
 import Meal from "../../interfaces/meal.interface";
 import MealModal from "./MealItem/MealModal";
-import { useEffect, useReducer, useState } from "react";
+import { useReducer } from "react";
 import { uiActions } from "../../store/ui/ui.slice";
 import { storeState } from "../../store";
 
