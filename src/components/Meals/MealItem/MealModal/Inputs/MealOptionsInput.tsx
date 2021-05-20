@@ -62,35 +62,9 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
         return (
           <IonItemGroup key={optionId}>
             <IonItemDivider className={classes["sticky-divider"]} color="light">
-              <IonLabel>
-                {options[optionId].optionText}
-                {/* <span className={classes.validators}>
-                  {options[optionId].atLeast > 0 && options[optionId].upTo > 0
-                    ? options[optionId].atLeast === options[optionId].upTo
-                      ? options[optionId].atLeast === 1
-                        ? "Choose 1 option."
-                        : `Pick ${options[optionId].atLeast} option${
-                            options[optionId].atLeast !== 1 ? "s" : ""
-                          }.`
-                      : `Pick between ${options[optionId].atLeast} and ${options[optionId].upTo} options.`
-                    : options[optionId].atLeast === 0 &&
-                      options[optionId].upTo > 0
-                    ? `Pick up to ${options[optionId].upTo} option${
-                        options[optionId].upTo !== 1 ? "s" : ""
-                      }.`
-                    : options[optionId].atLeast > 0 &&
-                      options[optionId].upTo === 0
-                    ? `Pick at least ${options[optionId].atLeast} option${
-                        options[optionId].atLeast !== 1 ? "s" : ""
-                      }.`
-                    : options[optionId].atLeast === 0 &&
-                      options[optionId].upTo === 0
-                    ? ""
-                    : ""}
-                </span> */}
-              </IonLabel>
+              <IonLabel>{options[optionId].optionText}</IonLabel>
               <IonBadge
-                color={optionsState.isValid[optionId] ? "success" : "danger"}
+                color={optionsState.isValid[optionId] ? "success" : "warning"}
                 slot="end"
                 className={classes["required-badge"]}
               >
@@ -212,10 +186,6 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
                       )}
                       {options[optionId].type === "checkbox" && (
                         <IonCheckbox
-                          // checked={options[optionId].selectedId.includes(
-                          //   subOptionId
-                          // )}
-                          // disabled={optionsState.disabled[optionId]}
                           onIonChange={(e) => {
                             e.stopPropagation();
                             if (e.detail.checked) {

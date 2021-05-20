@@ -4,7 +4,6 @@ import {
   useCallback,
   useMemo,
   useReducer,
-  useRef,
   useState,
 } from "react";
 import {
@@ -17,7 +16,6 @@ import {
   IonItem,
   IonLabel,
 } from "@ionic/react";
-import Swal from "sweetalert2";
 
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import {
@@ -32,17 +30,18 @@ import classes from "./MealModal.module.css";
 import MealAmountInput from "./Inputs/MealAmountInput";
 import MealCommentInput from "./Inputs/MealCommentInput";
 import MealOptionsInput from "./Inputs/MealOptionsInput";
+import InputErrors from "./Inputs/InputErrors";
 import inputReducer from "../../reducers/input-reducer.function";
 
 import Meal from "../../interfaces/meal.interface";
 import { OptionsState } from "../../interfaces/meal-options.interface";
 import { InputReducerType } from "../../enums/input-reducer-type.enum";
-import InputErrors from "./Inputs/InputErrors";
+import fireToast from "../../../Layout/Toast";
 
 interface MealModalProps {
   meal: Meal;
   onDismiss: () => void;
-  onAddToCart: (amount: number) => void;
+  onAddToCart: (val: any) => void;
 }
 
 const MealModal: React.FC<MealModalProps> = ({
@@ -62,7 +61,6 @@ const MealModal: React.FC<MealModalProps> = ({
 
   const defaultOptions = useMemo(() => meal.options, [meal.options]);
   const updateOptions = useCallback((optionsState: OptionsState) => {
-    // console.log(optionsState);
     return dispatchInput({
       type: InputReducerType.UPDATE_OPTIONS,
       optionsState,
@@ -76,21 +74,39 @@ const MealModal: React.FC<MealModalProps> = ({
     });
   }, []);
 
-  const errorsEl = useRef(IonList);
-
   const src = require(`../../../../assets/img/meals/${meal.id}.jpg`).default;
 
   // console.log("modal rerendered");
 
+  const hasErrors = () => {
+    const falseOption = Object.keys(inputState.options.isValid).find(
+      (option) => !inputState.options.isValid[option]
+    );
+    return !!falseOption && inputState.request.isValid;
+  };
+
   const submitHandler: FormEventHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(errorsEl.current);
-    Swal.fire({
-      icon: "error",
-      // toast: true,
-      html: errorsEl.current,
-      heightAuto: false,
+    if (hasErrors()) {
+      return fireToast({
+        icon: "warning",
+        title: "Please check the following options",
+        html: (
+          <InputErrors
+            optionsState={inputState.options}
+            requestIsValid={inputState.request.isValid}
+          />
+        ),
+      });
+    }
+
+    onDismiss();
+    fireToast({
+      icon: "success",
+      title: "Added to Cart!",
+      text: `${inputState.amount} x ${meal.name}`,
     });
+    return onAddToCart(inputState);
   };
 
   const handleScroll = (e: any) => {
@@ -197,10 +213,9 @@ const MealModal: React.FC<MealModalProps> = ({
                   })
                 }
               />
-              <InputErrors ref={errorsEl} optionsState={inputState.options} />
+
               <IonButton
                 expand="block"
-                onClick={() => onDismiss()}
                 fill="solid"
                 color="secondary"
                 className={classes["add-button"]}

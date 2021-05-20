@@ -144,7 +144,3 @@ ion-item {
 .text-area textarea {
   min-height: 38px;
 }
-
-.errors {
-  display: none;
-}
