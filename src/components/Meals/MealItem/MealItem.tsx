@@ -1,6 +1,6 @@
 import { IonItem, IonLabel, IonAvatar, IonImg } from "@ionic/react";
+import Meal from "../interfaces/meal.interface";
 
-import Meal from "../../../interfaces/meal.interface";
 import classes from "./MealItem.module.css";
 
 const MealItem: React.FC<{

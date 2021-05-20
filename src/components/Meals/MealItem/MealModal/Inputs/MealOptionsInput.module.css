@@ -17,3 +17,8 @@
 ion-item-divider {
   border: 0;
 }
+
+.sticky-divider {
+  position: sticky;
+  top: 0px;
+}

@@ -1,27 +1,36 @@
-import MealOptions from "../../../../interfaces/meal-options.interface";
-import { OptionsReducerType } from "./options-reduce-type.enum";
+import { OptionsReducerType } from "../enums/options-reduce-type.enum";
+import {
+  MealOptions,
+  OptionsState,
+} from "../interfaces/meal-options.interface";
+
+const isValid = (atLeast: number, upTo: number, count: number) => {
+  if (atLeast < 0 || upTo < 0 || count < 0) {
+    return false;
+  }
+
+  if (atLeast > 0 && upTo === 0) {
+    return atLeast <= count;
+  }
+  if (atLeast === 0 && upTo > 0) {
+    return upTo >= count;
+  }
+  if (atLeast > 0 && upTo > 0) {
+    return count >= atLeast && count <= upTo;
+  }
+
+  return true;
+};
 
 const mealOptionsReducer = (
-  state: {
-    options: MealOptions;
-    isValid: { [optionId: string]: boolean };
-    disabled: { [optionId: string]: boolean };
-  },
+  state: OptionsState,
   action: {
-    optionId: string;
     type: OptionsReducerType;
+    optionId: string;
     subOptionId?: string;
     selectedId?: string;
   }
-): {
-  options: MealOptions;
-  isValid: {
-    [x: string]: boolean;
-  };
-  disabled: {
-    [x: string]: boolean;
-  };
-} => {
+): OptionsState => {
   let updatedOptions: MealOptions;
   switch (action.type) {
     case OptionsReducerType.INCREMENT_SUBITEM:
@@ -46,11 +55,11 @@ const mealOptionsReducer = (
         options: updatedOptions,
         isValid: {
           ...state.isValid,
-          [action.optionId]:
-            updatedOptions[action.optionId].subOptionsCount >=
-              updatedOptions[action.optionId].atLeast &&
-            updatedOptions[action.optionId].subOptionsCount <=
-              updatedOptions[action.optionId].upTo,
+          [action.optionId]: isValid(
+            updatedOptions[action.optionId].atLeast,
+            updatedOptions[action.optionId].upTo,
+            updatedOptions[action.optionId].subOptionsCount
+          ),
         },
         disabled: {
           ...state.disabled,
@@ -60,7 +69,6 @@ const mealOptionsReducer = (
               updatedOptions[action.optionId].upTo,
         },
       };
-
     case OptionsReducerType.DECREMENT_SUBITEM:
       if (!action.subOptionId) break;
       updatedOptions = {
@@ -84,11 +92,11 @@ const mealOptionsReducer = (
         options: updatedOptions,
         isValid: {
           ...state.isValid,
-          [action.optionId]:
-            updatedOptions[action.optionId].subOptionsCount >=
-              updatedOptions[action.optionId].atLeast &&
-            updatedOptions[action.optionId].subOptionsCount <=
-              updatedOptions[action.optionId].upTo,
+          [action.optionId]: isValid(
+            updatedOptions[action.optionId].atLeast,
+            updatedOptions[action.optionId].upTo,
+            updatedOptions[action.optionId].subOptionsCount
+          ),
         },
         disabled: {
           ...state.disabled,
@@ -108,16 +116,15 @@ const mealOptionsReducer = (
           selectedId: [action.selectedId],
         },
       };
-
       return {
         options: updatedOptions,
         isValid: {
           ...state.isValid,
-          [action.optionId]:
-            updatedOptions[action.optionId].subOptionsCount >=
-              updatedOptions[action.optionId].atLeast &&
-            updatedOptions[action.optionId].subOptionsCount <=
-              updatedOptions[action.optionId].upTo,
+          [action.optionId]: isValid(
+            updatedOptions[action.optionId].atLeast,
+            updatedOptions[action.optionId].upTo,
+            updatedOptions[action.optionId].subOptionsCount
+          ),
         },
         disabled: {
           ...state.disabled,
@@ -149,18 +156,16 @@ const mealOptionsReducer = (
           },
         },
       };
-      console.log("CURRENT STATE", state.options[action.optionId]);
-      console.log("UPDATED STATE", updatedOptions[action.optionId]);
 
       return {
         options: updatedOptions,
         isValid: {
           ...state.isValid,
-          [action.optionId]:
-            updatedOptions[action.optionId].subOptionsCount >=
-              updatedOptions[action.optionId].atLeast &&
-            updatedOptions[action.optionId].subOptionsCount <=
-              updatedOptions[action.optionId].upTo,
+          [action.optionId]: isValid(
+            updatedOptions[action.optionId].atLeast,
+            updatedOptions[action.optionId].upTo,
+            updatedOptions[action.optionId].subOptionsCount
+          ),
         },
         disabled: {
           ...state.disabled,
@@ -170,6 +175,7 @@ const mealOptionsReducer = (
               updatedOptions[action.optionId].upTo,
         },
       };
+
     case OptionsReducerType.UNCHECK:
       if (!action.subOptionId) break;
       updatedOptions = {
@@ -198,11 +204,11 @@ const mealOptionsReducer = (
         options: updatedOptions,
         isValid: {
           ...state.isValid,
-          [action.optionId]:
-            updatedOptions[action.optionId].subOptionsCount >=
-              updatedOptions[action.optionId].atLeast &&
-            updatedOptions[action.optionId].subOptionsCount <=
-              updatedOptions[action.optionId].upTo,
+          [action.optionId]: isValid(
+            updatedOptions[action.optionId].atLeast,
+            updatedOptions[action.optionId].upTo,
+            updatedOptions[action.optionId].subOptionsCount
+          ),
         },
         disabled: {
           ...state.disabled,

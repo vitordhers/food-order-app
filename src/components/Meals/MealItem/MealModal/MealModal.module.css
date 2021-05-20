@@ -2,7 +2,7 @@ ion-content {
   --background: var(--ion-item-background);
   --offsetY: 0;
   --imgHeight: 350;
-  --turningPoint: calc(var(--imgHeight) -50 -44);
+  --turningPoint: calc(var(--imgHeight) - 50 - 44);
 }
 
 .title {
@@ -105,7 +105,14 @@ ion-item {
   position: fixed;
   --padding-start: 10px;
   --padding-top: 10px;
-  opacity: clamp(0, calc(var(--offsetY) / (var(--imgHeight) - 51)), 1);
+  opacity: clamp(
+    0,
+    calc(
+      calc(var(--offsetY) - var(--turningPoint)) /
+        calc(var(--imgHeight) - var(--turningPoint) - 44)
+    ),
+    1
+  );
 }
 
 .header-toolbar {
@@ -128,4 +135,16 @@ ion-item {
 
 .add-button {
   margin: 0px 30px;
+}
+
+.text-area {
+  margin: 0px;
+}
+
+.text-area textarea {
+  min-height: 38px;
+}
+
+.errors {
+  display: none;
 }

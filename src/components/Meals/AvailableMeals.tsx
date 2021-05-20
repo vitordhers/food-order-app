@@ -3,17 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { cartActions } from "../../store/cart/cart.slice";
 import MealItem from "./MealItem/MealItem";
 import classes from "./AvailableMeals.module.css";
-import Meal from "../../interfaces/meal.interface";
-import MealModal from "./MealItem/MealModal";
+
 import { useReducer } from "react";
 import { uiActions } from "../../store/ui/ui.slice";
 import { storeState } from "../../store";
+import MealModal from "./MealItem/MealModal/MealModal";
+import Meal from "./interfaces/meal.interface";
 
 const EMPTY_ITEM = {
   id: "",
   name: "",
   description: "",
   price: 0,
+  options: {},
 };
 
 const modalReducer = (
@@ -44,12 +46,7 @@ const AvailableMeals: React.FC = () => {
   const uiState = useSelector((state: storeState) => state.ui);
   const dispatch = useDispatch();
   const [modalState, dispatchModal] = useReducer(modalReducer, {
-    selectedMeal: {
-      id: "",
-      name: "",
-      description: "",
-      price: 0,
-    },
+    selectedMeal: EMPTY_ITEM,
     component: <div></div>,
   });
 
@@ -115,11 +112,38 @@ const AvailableMeals: React.FC = () => {
           },
           subOptionsCount: 0,
           atLeast: 1,
-          upTo: 2,
+          upTo: 0,
           selectedId: [],
           checkboxPrice: 0,
         },
         o3: {
+          required: true,
+          type: "iterable",
+          optionText: "🍱 Additionals",
+          subOptions: {
+            so1: {
+              subOptionText: "Wassabi",
+              subOptionPrice: 1,
+              subOptionAmount: 0,
+            },
+            so2: {
+              subOptionText: "Shoyo",
+              subOptionPrice: 0.5,
+              subOptionAmount: 0,
+            },
+            so3: {
+              subOptionText: "Ginger",
+              subOptionPrice: 1.5,
+              subOptionAmount: 0,
+            },
+          },
+          subOptionsCount: 0,
+          atLeast: 1,
+          upTo: 3,
+          selectedId: [],
+          checkboxPrice: 0,
+        },
+        o4: {
           required: false,
           type: "checkbox",
           optionText: "🍜 Send Chopsticks",
@@ -138,7 +162,7 @@ const AvailableMeals: React.FC = () => {
           },
           subOptionsCount: 0,
           atLeast: 0,
-          upTo: 0,
+          upTo: 2,
           selectedId: [],
         },
       },
@@ -148,18 +172,21 @@ const AvailableMeals: React.FC = () => {
       name: "Temaki",
       description: "Delicious fish rolled into a rice cone",
       price: 16.5,
+      options: {},
     },
     {
       id: "m3",
       name: "Sashimi",
       description: "The fresher a salmon can get!",
       price: 12.99,
+      options: {},
     },
     {
       id: "m4",
       name: "Shimeji",
       description: "Know those mushrooms from Super Mario? Twice as better",
       price: 18.99,
+      options: {},
     },
   ];
 

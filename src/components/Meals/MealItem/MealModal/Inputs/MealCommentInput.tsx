@@ -1,9 +1,9 @@
-import { IonItem, IonTextarea, IonLabel } from "@ionic/react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { IonItem, IonTextarea, IonLabel, IonItemDivider } from "@ionic/react";
+import { useEffect, useState } from "react";
 import classes from "../MealModal.module.css";
 
 interface MealCommentInputProps {
-  updateComment: Dispatch<SetStateAction<string>>;
+  updateComment: (request: string) => void;
   previousComment?: string;
 }
 
@@ -24,10 +24,12 @@ const MealCommentInput: React.FC<MealCommentInputProps> = ({
   }, [comment, updateComment]);
   return (
     <>
-      <IonItem lines="none">
+      <IonItemDivider color="light">
         <IonLabel className={classes.title}>Any requests?</IonLabel>
-        <span> {comment.length} / 200</span>
-      </IonItem>
+        <span slot="end" className="ion-padding-horizontal">
+          {comment.length} / 200
+        </span>
+      </IonItemDivider>
       <IonItem>
         <IonTextarea
           placeholder="Ex.: No wasabi, separate cream cheese, etc"
@@ -38,6 +40,8 @@ const MealCommentInput: React.FC<MealCommentInputProps> = ({
           maxlength={200}
           name="requests"
           wrap="soft"
+          rows={2}
+          className={classes["text-area"]}
         ></IonTextarea>
       </IonItem>
     </>

@@ -1,4 +1,4 @@
-export default interface MealOptions {
+export interface MealOptions {
   [optionId: string]: {
     required: boolean;
     type: "checkbox" | "radio" | "iterable";
@@ -15,6 +15,16 @@ export default interface MealOptions {
     upTo: number;
     selectedId: string[];
     checkboxPrice: number;
+  };
+}
+
+export interface OptionsState {
+  options: MealOptions;
+  isValid: {
+    [x: string]: boolean;
+  };
+  disabled: {
+    [x: string]: boolean;
   };
 }
 

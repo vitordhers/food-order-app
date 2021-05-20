@@ -1,4 +1,12 @@
-import { FormEvent, FormEventHandler, useState } from "react";
+import {
+  FormEvent,
+  FormEventHandler,
+  useCallback,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import {
   IonButtons,
   IonButton,
@@ -9,6 +17,7 @@ import {
   IonItem,
   IonLabel,
 } from "@ionic/react";
+import Swal from "sweetalert2";
 
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,12 +26,18 @@ import {
   faDollarSign,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
+
 import classes from "./MealModal.module.css";
+
 import MealAmountInput from "./Inputs/MealAmountInput";
 import MealCommentInput from "./Inputs/MealCommentInput";
 import MealOptionsInput from "./Inputs/MealOptionsInput";
+import inputReducer from "../../reducers/input-reducer.function";
 
-import Meal from "../../../interfaces/meal.interface";
+import Meal from "../../interfaces/meal.interface";
+import { OptionsState } from "../../interfaces/meal-options.interface";
+import { InputReducerType } from "../../enums/input-reducer-type.enum";
+import InputErrors from "./Inputs/InputErrors";
 
 interface MealModalProps {
   meal: Meal;
@@ -36,48 +51,57 @@ const MealModal: React.FC<MealModalProps> = ({
   onAddToCart,
 }) => {
   const [offsetY, setOffsetY] = useState(0);
-  const [comment, setComment] = useState("");
-  const [count, setCount] = useState(1);
-  const [amountIsValid, setAmountIsValid] = useState(true);
 
-  const src = require(`../../../assets/img/meals/${meal.id}.jpg`).default;
+  const [inputState, dispatchInput] = useReducer(inputReducer, {
+    basePrice: meal.price,
+    currentPrice: meal.price,
+    options: { options: meal.options, isValid: {}, disabled: {} },
+    request: { value: "", isValid: true },
+    amount: { value: 1, isValid: true },
+  });
 
-  console.log("rerendered");
+  const defaultOptions = useMemo(() => meal.options, [meal.options]);
+  const updateOptions = useCallback((optionsState: OptionsState) => {
+    // console.log(optionsState);
+    return dispatchInput({
+      type: InputReducerType.UPDATE_OPTIONS,
+      optionsState,
+    });
+  }, []);
+
+  const updateRequest = useCallback((request: string) => {
+    return dispatchInput({
+      type: InputReducerType.UPDATE_REQUEST,
+      request,
+    });
+  }, []);
+
+  const errorsEl = useRef(IonList);
+
+  const src = require(`../../../../assets/img/meals/${meal.id}.jpg`).default;
+
+  // console.log("modal rerendered");
 
   const submitHandler: FormEventHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (count <= 0) {
-      setAmountIsValid(false);
-      return;
-    }
-    onAddToCart(count);
+    console.log(errorsEl.current);
+    Swal.fire({
+      icon: "error",
+      // toast: true,
+      html: errorsEl.current,
+      heightAuto: false,
+    });
   };
 
   const handleScroll = (e: any) => {
     setOffsetY(e.detail.scrollTop);
   };
 
-  const handleIncrement = () => {
-    setCount(count + 1);
-  };
-
-  const handleDecrement = () => {
-    if (count < 1) {
-      setAmountIsValid(false);
-      return;
-    }
-    setCount(count - 1);
-  };
-
   return (
     <IonContent
       scrollEvents
       onIonScroll={handleScroll}
-      fullscreen
-      style={{
-        "--offsetY": offsetY,
-      }}
+      style={{ "--offsetY": `clamp(0, ${offsetY}, 350)` }}
     >
       <form onSubmit={submitHandler}>
         <div className={classes.grid}>
@@ -144,14 +168,14 @@ const MealModal: React.FC<MealModalProps> = ({
               </IonItem>
               {meal.options && Object.keys(meal.options).length > 0 && (
                 <MealOptionsInput
-                  mealOptions={meal.options}
-                  updateOptions={() => {}}
+                  mealOptions={defaultOptions}
+                  updateOptions={updateOptions}
                 />
               )}
 
-              <MealCommentInput updateComment={setComment} />
+              <MealCommentInput updateComment={updateRequest} />
 
-              {!amountIsValid && (
+              {!inputState.amount.isValid && (
                 <IonItem lines="none" color="danger">
                   Please a valid amount (at least 1).
                 </IonItem>
@@ -161,10 +185,19 @@ const MealModal: React.FC<MealModalProps> = ({
           <div className={classes.action}>
             <IonToolbar>
               <MealAmountInput
-                count={count}
-                onIncrement={handleIncrement}
-                onDecrement={handleDecrement}
+                count={inputState.amount.value}
+                onIncrement={() =>
+                  dispatchInput({
+                    type: InputReducerType.INCREMENT_AMOUNT,
+                  })
+                }
+                onDecrement={() =>
+                  dispatchInput({
+                    type: InputReducerType.DECREMENT_AMOUNT,
+                  })
+                }
               />
+              <InputErrors ref={errorsEl} optionsState={inputState.options} />
               <IonButton
                 expand="block"
                 onClick={() => onDismiss()}
@@ -175,7 +208,9 @@ const MealModal: React.FC<MealModalProps> = ({
               >
                 Add
                 <br />
-                {`$${(meal.price * count).toFixed(2)}`}
+                {`$${(
+                  inputState.currentPrice * inputState.amount.value
+                ).toFixed(2)}`}
               </IonButton>
             </IonToolbar>
           </div>

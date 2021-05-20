@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
+import { useReducer, memo, useMemo, useEffect } from "react";
 import {
   IonItemGroup,
   IonItemDivider,
@@ -22,80 +16,55 @@ import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import {
   faMinus,
   faPlus,
-  faCheckDouble,
+  faCheckCircle,
+  faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import mealOptionsReducer from "./mealOptionsReducer";
-import MealOptions from "../../../../interfaces/meal-options.interface";
-import { OptionsReducerType } from "./options-reduce-type.enum";
+import {
+  MealOptions,
+  OptionsState,
+} from "../../../interfaces/meal-options.interface";
 import classes from "./MealOptionsInput.module.css";
-
-const mergeObjects = (objects: { [x: string]: boolean }[]) => {
-  return objects.reduce((result, current) => {
-    return Object.assign(result, current);
-  }, {});
-};
+import mealOptionsReducer from "../../../reducers/meal-options-reducer.function";
+import useCombineValidators from "../../../hooks/UseCombineValidators.hook";
+import { OptionsReducerType } from "../../../enums/options-reduce-type.enum";
 
 type MealCommentInputProps = {
   mealOptions: MealOptions;
-  updateOptions: Dispatch<SetStateAction<any>>;
-  previousOptions?: any;
+  updateOptions: (optionsState: OptionsState) => void;
 };
 
 const MealOptionsInput: React.FC<MealCommentInputProps> = ({
   mealOptions,
   updateOptions,
-  previousOptions,
 }) => {
-  const validatorsList = Object.keys(mealOptions).map((optionId) =>
-    mealOptions[optionId].atLeast > 0
-      ? {
-          [optionId]:
-            mealOptions[optionId].subOptionsCount >=
-              mealOptions[optionId].atLeast &&
-            mealOptions[optionId].subOptionsCount >= mealOptions[optionId].upTo,
-        }
-      : {}
-  );
-  const validators = mergeObjects(validatorsList);
-  const disableablesList = Object.keys(mealOptions).map((optionId) =>
-    mealOptions[optionId].upTo > 0
-      ? {
-          [optionId]:
-            mealOptions[optionId].subOptionsCount >=
-              mealOptions[optionId].atLeast &&
-            mealOptions[optionId].subOptionsCount >= mealOptions[optionId].upTo,
-        }
-      : {}
-  );
-  const disableables = mergeObjects(disableablesList);
+  const memoizedOptions = useMemo(() => mealOptions, [mealOptions]);
+
+  const validators = useCombineValidators(memoizedOptions);
+  const disableables = useCombineValidators(memoizedOptions, "disableables");
 
   const [optionsState, dispatchOptions] = useReducer(mealOptionsReducer, {
-    options: mealOptions,
+    options: memoizedOptions,
     isValid: { ...validators },
     disabled: { ...disableables },
   });
 
+  useEffect(() => {
+    updateOptions(optionsState);
+  }, [optionsState, updateOptions]);
+
   const { options } = optionsState;
 
-  useEffect(() => {
-    return () => {
-      // !!Object.keys(optionsState.isValid).find(
-      //   (optionId) => validators[optionId] === false
-      updateOptions(options);
-    };
-  }, [options, updateOptions]);
-
-  // console.log(options);
+  // console.log("options rendered");
 
   return (
     <>
       {Object.keys(options).map((optionId) => {
         return (
           <IonItemGroup key={optionId}>
-            <IonItemDivider color="light">
+            <IonItemDivider className={classes["sticky-divider"]} color="light">
               <IonLabel>
                 {options[optionId].optionText}
-                <span className={classes.validators}>
+                {/* <span className={classes.validators}>
                   {options[optionId].atLeast > 0 && options[optionId].upTo > 0
                     ? options[optionId].atLeast === options[optionId].upTo
                       ? options[optionId].atLeast === 1
@@ -118,25 +87,36 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
                       options[optionId].upTo === 0
                     ? ""
                     : ""}
-                </span>
+                </span> */}
               </IonLabel>
               <IonBadge
-                color={
-                  optionsState.isValid[optionId] ? "transparent" : "danger"
-                }
+                color={optionsState.isValid[optionId] ? "success" : "danger"}
                 slot="end"
                 className={classes["required-badge"]}
-                mode="ios"
               >
-                {!optionsState.isValid[optionId] &&
-                  options[optionId].required && <IonLabel>Required</IonLabel>}
-
-                {optionsState.isValid[optionId] && (
+                <IonLabel>
                   <Icon
-                    icon={faCheckDouble}
-                    color="var(--ion-color-success)"
+                    icon={
+                      optionsState.isValid[optionId]
+                        ? faCheckCircle
+                        : faExclamationCircle
+                    }
                   ></Icon>
-                )}
+                  {!optionsState.isValid[optionId] && (
+                    <span className={classes.validators}>
+                      Required
+                      <br />
+                    </span>
+                  )}
+
+                  <span className={classes.validators}>
+                    {options[optionId].type !== "radio" &&
+                    optionsState.isValid[optionId] &&
+                    options[optionId].upTo > 0
+                      ? ` up to ${options[optionId].upTo}`
+                      : ` at least ${options[optionId].atLeast}`}
+                  </span>
+                </IonLabel>
               </IonBadge>
             </IonItemDivider>
             <IonRadioGroup
@@ -150,7 +130,7 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
               }
             >
               {Object.keys(options[optionId].subOptions).map((subOptionId) => {
-                if (!subOptionId) return;
+                if (!subOptionId) return <></>;
                 return (
                   <IonItem key={subOptionId} lines="none">
                     <IonLabel>
@@ -228,7 +208,7 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
                         </IonToolbar>
                       )}
                       {options[optionId].type === "radio" && (
-                        <IonRadio value={subOptionId} mode="ios" />
+                        <IonRadio value={subOptionId} mode="md" />
                       )}
                       {options[optionId].type === "checkbox" && (
                         <IonCheckbox
@@ -237,16 +217,16 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
                           // )}
                           // disabled={optionsState.disabled[optionId]}
                           onIonChange={(e) => {
-                            console.log("onchange");
+                            e.stopPropagation();
                             if (e.detail.checked) {
                               return dispatchOptions({
-                                type: OptionsReducerType.CHECK,
+                                type: OptionsReducerType.INCREMENT_SUBITEM,
                                 optionId,
                                 subOptionId,
                               });
                             }
                             return dispatchOptions({
-                              type: OptionsReducerType.UNCHECK,
+                              type: OptionsReducerType.DECREMENT_SUBITEM,
                               optionId,
                               subOptionId,
                             });
@@ -265,4 +245,4 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
   );
 };
 
-export default MealOptionsInput;
+export default memo(MealOptionsInput);
