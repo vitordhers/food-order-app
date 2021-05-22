@@ -1,14 +1,9 @@
 import { InputReducerType } from "../enums/input-reducer-type.enum";
+import InputState from "../interfaces/input-state.interface";
 import { OptionsState } from "../interfaces/meal-options.interface";
 
 const inputReducer = (
-  state: {
-    basePrice: number;
-    currentPrice: number;
-    options: OptionsState;
-    request: { value: string; isValid: boolean };
-    amount: { value: number; isValid: boolean };
-  },
+  state: InputState,
   action: {
     type: InputReducerType;
     optionsState?: OptionsState;
@@ -36,7 +31,7 @@ const inputReducer = (
       if (!action.request) break;
       return {
         ...state,
-        requests: {
+        request: {
           value: action.request,
           isValid: action.request.length <= 200,
         },

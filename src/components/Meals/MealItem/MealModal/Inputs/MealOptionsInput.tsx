@@ -1,4 +1,4 @@
-import { useReducer, memo, useMemo, useEffect } from "react";
+import { useReducer, memo, useEffect } from "react";
 import {
   IonItemGroup,
   IonItemDivider,
@@ -19,34 +19,24 @@ import {
   faCheckCircle,
   faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  MealOptions,
-  OptionsState,
-} from "../../../interfaces/meal-options.interface";
+import { OptionsState } from "../../../interfaces/meal-options.interface";
 import classes from "./MealOptionsInput.module.css";
 import mealOptionsReducer from "../../../reducers/meal-options-reducer.function";
-import useCombineValidators from "../../../hooks/UseCombineValidators.hook";
 import { OptionsReducerType } from "../../../enums/options-reduce-type.enum";
 
 type MealCommentInputProps = {
-  mealOptions: MealOptions;
+  inputOptions: OptionsState;
   updateOptions: (optionsState: OptionsState) => void;
 };
 
 const MealOptionsInput: React.FC<MealCommentInputProps> = ({
-  mealOptions,
+  inputOptions,
   updateOptions,
 }) => {
-  const memoizedOptions = useMemo(() => mealOptions, [mealOptions]);
-
-  const validators = useCombineValidators(memoizedOptions);
-  const disableables = useCombineValidators(memoizedOptions, "disableables");
-
-  const [optionsState, dispatchOptions] = useReducer(mealOptionsReducer, {
-    options: memoizedOptions,
-    isValid: { ...validators },
-    disabled: { ...disableables },
-  });
+  const [optionsState, dispatchOptions] = useReducer(
+    mealOptionsReducer,
+    inputOptions
+  );
 
   useEffect(() => {
     updateOptions(optionsState);
@@ -64,7 +54,7 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
             <IonItemDivider className={classes["sticky-divider"]} color="light">
               <IonLabel>{options[optionId].optionText}</IonLabel>
               <IonBadge
-                color={optionsState.isValid[optionId] ? "success" : "warning"}
+                color={optionsState.isValid[optionId] ? "primary" : "secondary"}
                 slot="end"
                 className={classes["required-badge"]}
               >
@@ -186,6 +176,10 @@ const MealOptionsInput: React.FC<MealCommentInputProps> = ({
                       )}
                       {options[optionId].type === "checkbox" && (
                         <IonCheckbox
+                          checked={
+                            options[optionId].subOptions[subOptionId]
+                              .subOptionAmount > 0
+                          }
                           onIonChange={(e) => {
                             e.stopPropagation();
                             if (e.detail.checked) {

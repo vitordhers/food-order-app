@@ -14,10 +14,20 @@
 
 .transparent {
   --background: transparent !important;
+  background-color: transparent;
 }
 
 @media only screen and (max-width: 1248px) {
   .modal-inner .modal-wrapper {
     max-width: 960px;
   }
+}
+
+.icon {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.tippy-content {
+  padding: 0px !important;
 }

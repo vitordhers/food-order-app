@@ -12,7 +12,7 @@ const HeaderCartButton: React.FC<HeaderCartButtonProps> = (props) => {
   const dispatch = useDispatch();
 
   const numberOfCartItems = cartState.items.reduce((acc, item) => {
-    return acc + item.amount;
+    return acc + item.input.amount.value;
   }, 0);
 
   const openCartModal = () => {

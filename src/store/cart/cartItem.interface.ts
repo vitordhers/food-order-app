@@ -1,8 +1,8 @@
+import InputState from "../../components/Meals/interfaces/input-state.interface";
+import Meal from "../../components/Meals/interfaces/meal.interface";
+
 export default interface CartItem {
   id: string;
-  name: string;
-  amount: number;
-  price: number;
-  comments?: string;
-  options?: any;
+  meal: Meal;
+  input: InputState;
 }

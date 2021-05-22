@@ -11,14 +11,14 @@ const MealAmountInput: React.FC<{
     <IonButtons slot="start">
       <IonButton
         onClick={() => onDecrement()}
-        color="danger"
+        color="secondary"
         shape="round"
         disabled={count <= 1}
       >
         <Icon icon={faMinus} size="2x"></Icon>
       </IonButton>
       <IonLabel>{count}</IonLabel>
-      <IonButton onClick={() => onIncrement()} color="success" shape="round">
+      <IonButton onClick={() => onIncrement()} color="primary" shape="round">
         <Icon icon={faPlus} size="2x"></Icon>
       </IonButton>
     </IonButtons>

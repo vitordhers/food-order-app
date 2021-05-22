@@ -1,14 +1,16 @@
+import { useReducer } from "react";
 import { IonList, IonCard, IonCardContent, IonModal } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
-import { cartActions } from "../../store/cart/cart.slice";
-import MealItem from "./MealItem/MealItem";
-import classes from "./AvailableMeals.module.css";
-
-import { useReducer } from "react";
-import { uiActions } from "../../store/ui/ui.slice";
 import { storeState } from "../../store";
+import { cartActions } from "../../store/cart/cart.slice";
+import { uiActions } from "../../store/ui/ui.slice";
+import { v1 as uuidv1 } from "uuid";
+
+import MealItem from "./MealItem/MealItem";
 import MealModal from "./MealItem/MealModal/MealModal";
 import Meal from "./interfaces/meal.interface";
+import InputState from "./interfaces/input-state.interface";
+import classes from "./AvailableMeals.module.css";
 
 const EMPTY_ITEM = {
   id: "",
@@ -23,7 +25,7 @@ const modalReducer = (
   action: {
     selectedMeal: Meal;
     type: string;
-    handleAddToCartItem: (amount: number) => void;
+    handleAddToCartItem: (meal: Meal, inputState: InputState) => void;
     handleDismissModal: () => void;
   }
 ) => {
@@ -57,9 +59,9 @@ const AvailableMeals: React.FC = () => {
   const DUMMY_MEALS: Meal[] = [
     {
       id: "m1",
-      name: "Niguiri Express ( 18 unidades)",
+      name: "Niguiri Express",
       description:
-        "Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese , Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice",
+        "Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice, Finest fish and Japanese rice",
       price: 22.99,
       options: {
         o1: {
@@ -195,17 +197,14 @@ const AvailableMeals: React.FC = () => {
     dispatch(uiActions.dismissItemModal());
   };
 
-  const handleAddToCartItem = (amount: number) => {
+  const handleAddToCartItem = (meal: Meal, inputState: InputState) => {
     dispatch(
       cartActions.addItem({
-        id: modalState.selectedMeal.id,
-        name: modalState.selectedMeal.name,
-        amount,
-        price: modalState.selectedMeal.price,
+        id: `${meal.id}_${uuidv1()}`,
+        meal,
+        input: inputState,
       })
     );
-
-    clearModalComponent();
   };
 
   const openMealModal = (id: string) => {
@@ -221,7 +220,6 @@ const AvailableMeals: React.FC = () => {
       handleDismissModal,
     });
 
-    // setSelectedMeal(selectedMeal);
     dispatch(uiActions.presentItemModal());
   };
 
@@ -235,7 +233,11 @@ const AvailableMeals: React.FC = () => {
   };
 
   const mealList = DUMMY_MEALS.map((meal) => (
-    <MealItem key={meal.id} meal={meal} handleClick={openMealModal}></MealItem>
+    <MealItem
+      key={meal.id}
+      meal={meal}
+      handleClick={() => openMealModal(meal.id)}
+    ></MealItem>
   ));
 
   return (
@@ -246,8 +248,8 @@ const AvailableMeals: React.FC = () => {
         </IonCardContent>
       </IonCard>
       <IonModal
-        isOpen={uiState.itemModalIsShown}
         cssClass="modal-inner"
+        isOpen={uiState.itemModalIsShown}
         onDidDismiss={handleDismissModal}
       >
         {modalState.component}

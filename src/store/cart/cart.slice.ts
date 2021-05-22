@@ -13,24 +13,39 @@ const cartSlice = createSlice({
   reducers: {
     addItem: (state, action: PayloadAction<CartItem>) => {
       state.totalAmount =
-        state.totalAmount + action.payload.price * action.payload.amount;
+        state.totalAmount +
+        action.payload.input.currentPrice * action.payload.input.amount.value;
       state.items.push(action.payload);
     },
     increment: (state, action: PayloadAction<string>) => {
       const index = state.items.findIndex((item) => item.id === action.payload);
-      state.totalAmount = state.totalAmount + state.items[index].price;
-      state.items[index].amount++;
+      state.totalAmount =
+        state.totalAmount + state.items[index].input.currentPrice;
+      state.items[index].input.amount.value++;
     },
     decrement: (state, action: PayloadAction<string>) => {
       const index = state.items.findIndex((item) => item.id === action.payload);
-      state.totalAmount = state.totalAmount - state.items[index].price;
-      state.items[index].amount--;
+      state.totalAmount =
+        state.totalAmount - state.items[index].input.currentPrice;
+      state.items[index].input.amount.value--;
+    },
+    updateItem(state, action: PayloadAction<CartItem>) {
+      const index = state.items.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.items.splice(index, 1, action.payload);
+      state.totalAmount =
+        state.totalAmount -
+        state.items[index].input.currentPrice +
+        state.items[index].input.currentPrice *
+          state.items[index].input.amount.value;
     },
     removeItem: (state, action: PayloadAction<string>) => {
       const index = state.items.findIndex((item) => item.id === action.payload);
       state.totalAmount =
         state.totalAmount -
-        state.items[index].price * state.items[index].amount;
+        state.items[index].input.currentPrice *
+          state.items[index].input.amount.value;
       state.items.splice(index, 1);
     },
   },

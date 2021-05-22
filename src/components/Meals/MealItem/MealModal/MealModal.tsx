@@ -34,32 +34,49 @@ import InputErrors from "./Inputs/InputErrors";
 import inputReducer from "../../reducers/input-reducer.function";
 
 import Meal from "../../interfaces/meal.interface";
-import { OptionsState } from "../../interfaces/meal-options.interface";
 import { InputReducerType } from "../../enums/input-reducer-type.enum";
 import fireToast from "../../../Layout/Toast";
+import { OptionsState } from "../../interfaces/meal-options.interface";
+import InputState from "../../interfaces/input-state.interface";
+import useCombineValidators from "../../hooks/UseCombineValidators.hook";
 
 interface MealModalProps {
   meal: Meal;
   onDismiss: () => void;
-  onAddToCart: (val: any) => void;
+  onAddToCart: (meal: Meal, inputState: InputState) => void;
+  previousState?: InputState;
 }
 
 const MealModal: React.FC<MealModalProps> = ({
   meal,
   onDismiss,
   onAddToCart,
+  previousState = null,
 }) => {
   const [offsetY, setOffsetY] = useState(0);
 
-  const [inputState, dispatchInput] = useReducer(inputReducer, {
-    basePrice: meal.price,
-    currentPrice: meal.price,
-    options: { options: meal.options, isValid: {}, disabled: {} },
-    request: { value: "", isValid: true },
-    amount: { value: 1, isValid: true },
-  });
+  const memoizedOptions = useMemo(() => meal.options, [meal.options]);
+  const validators = useCombineValidators(memoizedOptions);
+  const disableables = useCombineValidators(memoizedOptions, "disableables");
 
-  const defaultOptions = useMemo(() => meal.options, [meal.options]);
+  const initialState = useMemo(() => {
+    return (
+      previousState ?? {
+        basePrice: meal.price,
+        currentPrice: meal.price,
+        options: {
+          options: meal.options,
+          isValid: validators,
+          disabled: disableables,
+        },
+        request: { value: "", isValid: true },
+        amount: { value: 1, isValid: true },
+      }
+    );
+  }, [disableables, meal.options, meal.price, previousState, validators]);
+
+  const [inputState, dispatchInput] = useReducer(inputReducer, initialState);
+
   const updateOptions = useCallback((optionsState: OptionsState) => {
     return dispatchInput({
       type: InputReducerType.UPDATE_OPTIONS,
@@ -100,13 +117,13 @@ const MealModal: React.FC<MealModalProps> = ({
       });
     }
 
-    onDismiss();
+    onAddToCart(meal, inputState);
     fireToast({
       icon: "success",
-      title: "Added to Cart!",
-      text: `${inputState.amount} x ${meal.name}`,
+      title: previousState ? "Bag updated!" : "Added to Bag!",
+      text: `${inputState.amount.value} x ${meal.name}`,
     });
-    return onAddToCart(inputState);
+    return onDismiss();
   };
 
   const handleScroll = (e: any) => {
@@ -143,7 +160,7 @@ const MealModal: React.FC<MealModalProps> = ({
                 <IonButton
                   fill="clear"
                   shape="round"
-                  color="danger"
+                  color="secondary"
                   className={classes["round-adjust"]}
                   onClick={() => onDismiss()}
                 >
@@ -174,7 +191,7 @@ const MealModal: React.FC<MealModalProps> = ({
               <IonTitle className={classes.title}>{meal.name}</IonTitle>
               <IonItem lines="none">{meal.description}</IonItem>
               <IonItem lines="none">
-                <IonLabel color="secondary">
+                <IonLabel color="primary">
                   <Icon icon={faDollarSign}></Icon> &nbsp;
                   {meal.price.toFixed(2)}
                 </IonLabel>
@@ -184,7 +201,7 @@ const MealModal: React.FC<MealModalProps> = ({
               </IonItem>
               {meal.options && Object.keys(meal.options).length > 0 && (
                 <MealOptionsInput
-                  mealOptions={defaultOptions}
+                  inputOptions={initialState.options}
                   updateOptions={updateOptions}
                 />
               )}
@@ -217,15 +234,16 @@ const MealModal: React.FC<MealModalProps> = ({
               <IonButton
                 expand="block"
                 fill="solid"
-                color="secondary"
+                color="primary"
                 className={classes["add-button"]}
                 type="submit"
               >
-                Add
-                <br />
-                {`$${(
-                  inputState.currentPrice * inputState.amount.value
-                ).toFixed(2)}`}
+                <IonLabel>
+                  {previousState ? "Update" : "Add"}
+                  {`$${(
+                    inputState.currentPrice * inputState.amount.value
+                  ).toFixed(2)}`}
+                </IonLabel>
               </IonButton>
             </IonToolbar>
           </div>

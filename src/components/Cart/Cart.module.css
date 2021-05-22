@@ -8,3 +8,40 @@
 .drawing #bubble {
   background-color: tomato;
 }
+
+.list-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.option-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ion-text-color);
+}
+
+ion-note {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: row;
+  margin: 0px 5px;
+}
+
+@media only screen and (max-width: 992px) {
+  .options-list {
+    flex-direction: column;
+  }
+}
+
+.subOption {
+  font-size: 0.75rem;
+}
+
+.comma:first-child,
+.comma:last-child {
+  display: none !important;
+}

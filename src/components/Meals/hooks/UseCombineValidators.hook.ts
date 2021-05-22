@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { MealOptions } from "../interfaces/meal-options.interface";
 
 const mergeObjects = (objects: { [x: string]: boolean }[]) => {
@@ -10,9 +11,21 @@ const useCombineValidators = (
   mealOptions: MealOptions,
   type: "validators" | "disableables" = "validators"
 ) => {
-  const result = Object.keys(mealOptions).map((optionId) => {
-    if (type === "disableables") {
-      return mealOptions[optionId].upTo > 0
+  return useMemo(() => {
+    // console.log("combinevalidators");
+    const result = Object.keys(mealOptions).map((optionId) => {
+      if (type === "disableables") {
+        return mealOptions[optionId].upTo > 0
+          ? {
+              [optionId]:
+                mealOptions[optionId].subOptionsCount >=
+                  mealOptions[optionId].atLeast &&
+                mealOptions[optionId].subOptionsCount >=
+                  mealOptions[optionId].upTo,
+            }
+          : { [optionId]: false };
+      }
+      return mealOptions[optionId].atLeast > 0
         ? {
             [optionId]:
               mealOptions[optionId].subOptionsCount >=
@@ -20,18 +33,10 @@ const useCombineValidators = (
               mealOptions[optionId].subOptionsCount >=
                 mealOptions[optionId].upTo,
           }
-        : { [optionId]: false };
-    }
-    return mealOptions[optionId].atLeast > 0
-      ? {
-          [optionId]:
-            mealOptions[optionId].subOptionsCount >=
-              mealOptions[optionId].atLeast &&
-            mealOptions[optionId].subOptionsCount >= mealOptions[optionId].upTo,
-        }
-      : { [optionId]: true };
-  });
-  return mergeObjects(result);
+        : { [optionId]: true };
+    });
+    return mergeObjects(result);
+  }, [mealOptions, type]);
 };
 
 export default useCombineValidators;
