@@ -2,7 +2,7 @@
   margin: 0 0 0.25rem 0;
 }
 
-.description {
+.text {
   font-style: italic;
 }
 
@@ -19,7 +19,28 @@
   height: 70px;
 }
 
-ion-item {
-  --padding-top: 8px;
-  --inner-padding-bottom: 10px;
+.card {
+  margin: 0px;
+  border-radius: 8px;
+}
+
+.image {
+  width: calc(0.4px * var(--width));
+  border: none;
+  overflow: hidden;
+}
+
+.description {
+  width: calc(0.6px * var(--width));
+  height: calc(0.85 * 0.4px * var(--width));
+}
+
+.left {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.right {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }

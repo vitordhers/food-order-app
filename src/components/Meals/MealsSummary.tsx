@@ -1,6 +1,4 @@
 import {
-  IonTitle,
-  IonItem,
   IonCard,
   IonCardHeader,
   IonCardTitle,

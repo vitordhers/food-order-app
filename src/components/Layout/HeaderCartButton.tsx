@@ -20,16 +20,11 @@ const HeaderCartButton: React.FC<HeaderCartButtonProps> = (props) => {
   };
 
   return (
-    <IonButton
-      color="primary"
-      fill="solid"
-      shape="round"
-      expand="block"
-      onClick={openCartModal}
-    >
-      <Icon icon={faShoppingBag} />
-      <IonLabel> Your Bag </IonLabel>
-      <IonBadge slot="end" color="light" mode="ios">
+    <IonButton shape="round" expand="block" onClick={openCartModal}>
+      <IonBadge slot="end" color="primary" mode="ios" className="text-2xl">
+        <span className="icon">
+          <Icon icon={faShoppingBag} /> &nbsp;
+        </span>
         {numberOfCartItems}
       </IonBadge>
     </IonButton>

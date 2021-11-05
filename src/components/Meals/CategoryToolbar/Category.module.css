@@ -1,0 +1,13 @@
+.avatar {
+  max-width: 40px;
+  max-height: 40px;
+  margin: 10px;
+}
+
+.pinned {
+  box-shadow: none;
+}
+
+ion-card {
+  border-radius: 100%;
+}

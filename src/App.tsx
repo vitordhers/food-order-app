@@ -1,4 +1,3 @@
-import ReactDOM from "react-dom";
 import { Redirect, Route } from "react-router-dom";
 import { IonApp, IonRouterOutlet, IonModal } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
@@ -26,12 +25,15 @@ import "./theme/variables.css";
 /* Global styles */
 import "./global.style.css";
 
+import React, { useEffect } from "react";
+import Menu from "./components/Layout/Menu";
 import Cart from "./components/Cart/Cart";
-// import Counter from "./components/Meals/MealItem/Inputs/TestComponent";
-import { useDispatch, useSelector } from "react-redux";
 import { storeState } from "./store";
 import { uiActions } from "./store/ui/ui.slice";
-import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCartData, storeCartData } from "./store/cart/cart.actions";
+
+let isInitial = true;
 
 const App: React.FC = () => {
   const uiState = useSelector((state: storeState) => state.ui);
@@ -41,10 +43,28 @@ const App: React.FC = () => {
     dispatch(uiActions.dismissCartModal());
   };
 
+  const cart = useSelector((state: storeState) => state.cart);
+
+  useEffect(() => {
+    dispatch(fetchCartData());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isInitial) {
+      isInitial = false;
+      return;
+    }
+
+    if (cart.changed) {
+      dispatch(storeCartData(cart));
+    }
+  }, [cart, dispatch]);
+
   return (
     <IonApp>
+      <Menu />
       <IonReactRouter>
-        <IonRouterOutlet>
+        <IonRouterOutlet id="main">
           <Route exact path="/home">
             <Home />
           </Route>

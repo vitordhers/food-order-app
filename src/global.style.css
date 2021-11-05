@@ -1,3 +1,8 @@
+/* Use Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .modal-inner .modal-wrapper {
   overflow-y: auto;
   width: 100%;
@@ -12,7 +17,8 @@
   }
 }
 
-.transparent {
+.transparent,
+ion-item {
   --background: transparent !important;
   background-color: transparent;
 }
@@ -30,4 +36,8 @@
 
 .tippy-content {
   padding: 0px !important;
+}
+
+ion-toolbar ion-button {
+  text-transform: none;
 }

@@ -1,0 +1,10 @@
+.searchbar {
+  width: clamp(320px, 50vw, 100%);
+  margin: 0px auto;
+  padding: 0px;
+  /* padding-bottom: 0px !important; */
+}
+
+.shadow {
+  --box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.25);
+}

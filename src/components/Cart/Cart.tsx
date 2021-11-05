@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from "react";
+import React, { Fragment } from "react";
 import {
   IonHeader,
   IonContent,
@@ -16,7 +16,6 @@ import {
   IonRow,
   IonCol,
   IonNote,
-  IonModal,
 } from "@ionic/react";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import {
@@ -27,13 +26,10 @@ import {
   faClock,
   faTimes,
   faEllipsisV,
-  faEdit,
-  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { v1 as uuidv1 } from "uuid";
 import classes from "./Cart.module.css";
 import { BagSvg } from "./BagSvg";
-import { cartActions } from "../../store/cart/cart.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { storeState } from "../../store";
 import { uiActions } from "../../store/ui/ui.slice";
@@ -41,94 +37,20 @@ import CartItem from "../../store/cart/cartItem.interface";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/translucent.css";
-
-import Swal from "sweetalert2";
-import MealModal from "../Meals/MealItem/MealModal/MealModal";
-import Meal from "../Meals/interfaces/meal.interface";
-import InputState from "../Meals/interfaces/input-state.interface";
+import MealPopover from "./MealPopover";
 
 interface CartProps {}
 
-const MealPopover: React.FC<{ cartItem: CartItem }> = ({ cartItem }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useDispatch();
-
-  const handleDismissModal = () => {
-    setIsOpen(false);
-  };
-
-  const handleUpdateCart = (meal: Meal, input: InputState) => {
-    const updatedCartItem = { id: cartItem.id, meal, input };
-    dispatch(cartActions.updateItem(updatedCartItem));
-  };
-
-  const modalState = {
-    selectedMeal: cartItem.meal,
-    component: (
-      <MealModal
-        meal={cartItem.meal}
-        onAddToCart={handleUpdateCart}
-        onDismiss={handleDismissModal}
-        previousState={cartItem.input}
-      ></MealModal>
-    ),
-  };
-
-  return (
-    <Fragment>
-      <IonToolbar className="transparent">
-        <IonButtons>
-          <IonButton color="primary" onClick={() => setIsOpen(true)}>
-            <span className="icon" slot="start">
-              <Icon icon={faEdit}></Icon>
-            </span>
-            <IonLabel>Edit</IonLabel>
-          </IonButton>
-          <IonButton
-            color="secondary"
-            onClick={() => {
-              Swal.fire({
-                icon: "question",
-                title: `Are you sure you want to remove ${cartItem.meal.name} ?`,
-                heightAuto: false,
-                showConfirmButton: true,
-                showCancelButton: true,
-                confirmButtonColor: "#bada55",
-                cancelButtonColor: "#fe980e",
-              }).then((value) => {
-                console.log(value);
-              });
-            }}
-          >
-            <span className="icon" slot="start">
-              <Icon icon={faTrash}></Icon>
-            </span>
-            <IonLabel>Remove</IonLabel>
-          </IonButton>
-        </IonButtons>
-      </IonToolbar>
-      <IonModal
-        cssClass="modal-inner"
-        isOpen={isOpen}
-        onDidDismiss={handleDismissModal}
-      >
-        {modalState.component}
-      </IonModal>
-    </Fragment>
-  );
-};
-
 const Cart: React.FC<CartProps> = () => {
   const cartState = useSelector((state: storeState) => state.cart);
-  let width = useCallback(() => document.documentElement.clientWidth, []);
+  // let width = useCallback(() => document.documentElement.clientWidth, []);
   const dispatch = useDispatch();
 
   const hasItems = cartState.items.length > 0;
-  // const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
 
-  const handleRemoveFromCart = (id: string) => {
-    dispatch(cartActions.removeItem(id));
-  };
+  // const handleRemoveFromCart = (id: string) => {
+  //   dispatch(cartActions.removeItem(id));
+  // };
 
   const handleDismiss = () => {
     dispatch(uiActions.dismissCartModal());

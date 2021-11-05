@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import React, { Fragment, useReducer, useRef, useState } from "react";
 import { IonList, IonCard, IonCardContent, IonModal } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
 import { storeState } from "../../store";
@@ -7,54 +7,25 @@ import { uiActions } from "../../store/ui/ui.slice";
 import { v1 as uuidv1 } from "uuid";
 
 import MealItem from "./MealItem/MealItem";
-import MealModal from "./MealItem/MealModal/MealModal";
 import Meal from "./interfaces/meal.interface";
 import InputState from "./interfaces/input-state.interface";
 import classes from "./AvailableMeals.module.css";
-
-const EMPTY_ITEM = {
-  id: "",
-  name: "",
-  description: "",
-  price: 0,
-  options: {},
-};
-
-const modalReducer = (
-  state: { selectedMeal: Meal; component: JSX.Element },
-  action: {
-    selectedMeal: Meal;
-    type: string;
-    handleAddToCartItem: (meal: Meal, inputState: InputState) => void;
-    handleDismissModal: () => void;
-  }
-) => {
-  if (action.type === "SELECT_ITEM") {
-    return {
-      selectedMeal: action.selectedMeal,
-      component: (
-        <MealModal
-          meal={action.selectedMeal}
-          onAddToCart={action.handleAddToCartItem}
-          onDismiss={action.handleDismissModal}
-        ></MealModal>
-      ),
-    };
-  }
-  return { selectedMeal: EMPTY_ITEM, component: <div></div> };
-};
+import modalReducer, { EMPTY_ITEM } from "./reducers/modal-reducer.function";
 
 const AvailableMeals: React.FC = () => {
+  const list = useRef<HTMLIonListElement>(null);
+  let width =
+    Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    ) - 20;
+
   const uiState = useSelector((state: storeState) => state.ui);
   const dispatch = useDispatch();
   const [modalState, dispatchModal] = useReducer(modalReducer, {
     selectedMeal: EMPTY_ITEM,
-    component: <div></div>,
+    component: <Fragment></Fragment>,
   });
-
-  // useEffect(()=>{
-  //   modalCompon
-  // }, [ selectedMeal])
 
   const DUMMY_MEALS: Meal[] = [
     {
@@ -232,21 +203,25 @@ const AvailableMeals: React.FC = () => {
     });
   };
 
-  const mealList = DUMMY_MEALS.map((meal) => (
+  const mealList = DUMMY_MEALS.map((meal, index) => (
     <MealItem
       key={meal.id}
       meal={meal}
+      mealIndex={index}
       handleClick={() => openMealModal(meal.id)}
     ></MealItem>
   ));
 
   return (
-    <section className={`${classes.section} section`}>
-      <IonCard color="dark" className="card ion-no-padding">
-        <IonCardContent>
-          <IonList className="ion-no-padding">{mealList}</IonList>
-        </IonCardContent>
-      </IonCard>
+    <section className={`${classes.section} section animate`}>
+      <IonList
+        className="ion-no-padding"
+        ref={list}
+        style={{ "--width": width }}
+      >
+        {mealList}
+      </IonList>
+
       <IonModal
         cssClass="modal-inner"
         isOpen={uiState.itemModalIsShown}

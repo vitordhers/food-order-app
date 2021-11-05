@@ -1,4 +1,4 @@
-ion-content {
+.content-wrapper {
   --background: var(--ion-item-background);
   --offsetY: 0;
   --imgHeight: 350;
@@ -10,7 +10,7 @@ ion-content {
   font-weight: 500;
 }
 
-ion-item {
+.item {
   color: #a0a0a0;
   font-weight: 300;
   font-size: 0.875rem;

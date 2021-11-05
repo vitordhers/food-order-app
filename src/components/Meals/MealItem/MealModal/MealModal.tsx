@@ -132,6 +132,7 @@ const MealModal: React.FC<MealModalProps> = ({
 
   return (
     <IonContent
+      className={classes["content-wrapper"]}
       scrollEvents
       onIonScroll={handleScroll}
       style={{ "--offsetY": `clamp(0, ${offsetY}, 350)` }}
@@ -189,8 +190,10 @@ const MealModal: React.FC<MealModalProps> = ({
           <div className={classes.content}>
             <IonList>
               <IonTitle className={classes.title}>{meal.name}</IonTitle>
-              <IonItem lines="none">{meal.description}</IonItem>
-              <IonItem lines="none">
+              <IonItem className={classes.item} lines="none">
+                {meal.description}
+              </IonItem>
+              <IonItem className={classes.item} lines="none">
                 <IonLabel color="primary">
                   <Icon icon={faDollarSign}></Icon> &nbsp;
                   {meal.price.toFixed(2)}
@@ -209,7 +212,7 @@ const MealModal: React.FC<MealModalProps> = ({
               <MealCommentInput updateComment={updateRequest} />
 
               {!inputState.amount.isValid && (
-                <IonItem lines="none" color="danger">
+                <IonItem className={classes.item} lines="none" color="danger">
                   Please a valid amount (at least 1).
                 </IonItem>
               )}

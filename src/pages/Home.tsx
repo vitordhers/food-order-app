@@ -1,5 +1,4 @@
 import { IonContent, IonPage } from "@ionic/react";
-import "./Home.css";
 import Meals from "../components/Meals/Meals";
 import Header from "../components/Layout/Header";
 
